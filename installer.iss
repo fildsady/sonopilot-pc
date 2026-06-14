@@ -1,5 +1,5 @@
 #define AppName      "RP2350 Player"
-#define AppVersion   "1.0"
+#define AppVersion   "1.7"
 #define AppPublisher "fildsady"
 #define AppExeName   "RP2350Player.exe"
 #define SourceDir    "publish"
@@ -30,8 +30,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional icons:"
 
 [Files]
-Source: "{#SourceDir}\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "app.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\{#AppExeName}";         DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\*.dll";                 DestDir: "{app}"; Flags: ignoreversion
+Source: "app.ico";                            DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#AppName}";       Filename: "{app}\{#AppExeName}"; IconFilename: "{app}\app.ico"
