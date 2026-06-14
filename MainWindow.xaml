@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RP2350Player.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RP2350 Player  v1.0" Icon="/RP2350Player;component/app.ico" Height="680" Width="880"
+        Title="RP2350 Player  v1.0" Icon="/RP2350Player;component/app.ico" Height="750" Width="880"
         Background="#1e1e2e" Foreground="White"
         ResizeMode="CanMinimize">
 
@@ -269,43 +269,26 @@
             </Grid>
         </Border>
 
-        <!-- EQ -->
-        <Border Grid.Row="4" Background="#313244" CornerRadius="6" Padding="16,10" Margin="0,0,0,12">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="EQ:" Foreground="#a6adc8" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                <!-- Bass -->
-                <StackPanel Width="70" HorizontalAlignment="Center" Margin="0,0,12,0">
-                    <TextBlock x:Name="TbEqBass" Text=" 0.0" Foreground="#89b4fa" FontFamily="Consolas"
-                               FontSize="11" HorizontalAlignment="Center"/>
-                    <Slider x:Name="SlEqBass" Orientation="Vertical" Height="80" Minimum="0" Maximum="200"
-                            Value="100" IsEnabled="False" HorizontalAlignment="Center"
-                            ValueChanged="SlEqBass_Changed"/>
-                    <TextBlock Text="Bass" Foreground="#a6adc8" FontSize="11"
-                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
+        <!-- 32-Band EQ -->
+        <Border Grid.Row="4" Background="#313244" CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                    <TextBlock Text="32-Band EQ" Foreground="#a6adc8" FontSize="11"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <Button x:Name="BtnEqReset" Content="Flat Reset" Style="{StaticResource DarkBtn}"
+                            FontSize="10" Padding="8,3" IsEnabled="False" Click="BtnEqReset_Click"/>
+                    <TextBlock Text="  0=-12dB  100=flat  200=+12dB" Foreground="#45475a"
+                               FontSize="10" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </StackPanel>
-                <!-- Mid -->
-                <StackPanel Width="70" HorizontalAlignment="Center" Margin="0,0,12,0">
-                    <TextBlock x:Name="TbEqMid" Text=" 0.0" Foreground="#89b4fa" FontFamily="Consolas"
-                               FontSize="11" HorizontalAlignment="Center"/>
-                    <Slider x:Name="SlEqMid" Orientation="Vertical" Height="80" Minimum="0" Maximum="200"
-                            Value="100" IsEnabled="False" HorizontalAlignment="Center"
-                            ValueChanged="SlEqMid_Changed"/>
-                    <TextBlock Text="Mid" Foreground="#a6adc8" FontSize="11"
-                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
-                </StackPanel>
-                <!-- Treble -->
-                <StackPanel Width="70" HorizontalAlignment="Center">
-                    <TextBlock x:Name="TbEqTreble" Text=" 0.0" Foreground="#89b4fa" FontFamily="Consolas"
-                               FontSize="11" HorizontalAlignment="Center"/>
-                    <Slider x:Name="SlEqTreble" Orientation="Vertical" Height="80" Minimum="0" Maximum="200"
-                            Value="100" IsEnabled="False" HorizontalAlignment="Center"
-                            ValueChanged="SlEqTreble_Changed"/>
-                    <TextBlock Text="Treble" Foreground="#a6adc8" FontSize="11"
-                               HorizontalAlignment="Center" Margin="0,4,0,0"/>
-                </StackPanel>
-                <TextBlock Text="(100=flat  0=-12dB  200=+12dB)" Foreground="#45475a"
-                           FontSize="10" VerticalAlignment="Bottom" Margin="16,0,0,4"/>
-            </StackPanel>
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled" Height="125">
+                    <StackPanel x:Name="EqPanel" Orientation="Horizontal"/>
+                </ScrollViewer>
+            </Grid>
         </Border>
 
         <!-- Log -->

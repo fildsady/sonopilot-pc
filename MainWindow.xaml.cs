@@ -21,6 +21,16 @@ public partial class MainWindow : Window
     private bool   _volumeSync  = false;
     private bool   _eqSync      = false;
 
+    private const int EqBands = 32;
+    private static readonly float[] EqFreqs = {
+        16, 20, 25, 31.5f, 40, 50, 63, 80,
+        100, 125, 160, 200, 250, 315, 400, 500,
+        630, 800, 1000, 1250, 1600, 2000, 2500, 3150,
+        4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000
+    };
+    private readonly Slider[]    _eqSliders  = new Slider[EqBands];
+    private readonly TextBlock[] _eqDbLabels = new TextBlock[EqBands];
+
     private const int HotkeyCount = 8;
     private readonly TextBox[] _hkBoxes = new TextBox[HotkeyCount];
     private static readonly string HotkeyFile =
@@ -33,6 +43,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         BuildHotkeySlots();
         LoadHotkeys();
+        BuildEqSliders();
         RefreshPorts();
 
         _serial.LineReceived += OnLineReceived;
@@ -113,9 +124,8 @@ public partial class MainWindow : Window
         BtnRepeatAll.IsEnabled = on;
         BtnRepeatOff.IsEnabled = on;
         BtnAutoPlay.IsEnabled  = on;
-        SlEqBass.IsEnabled     = on;
-        SlEqMid.IsEnabled      = on;
-        SlEqTreble.IsEnabled   = on;
+        BtnEqReset.IsEnabled = on;
+        foreach (var s in _eqSliders) if (s != null) s.IsEnabled = on;
         if (!on)
         {
             TbNowPlaying.Text  = "— Not connected —";
@@ -310,28 +320,62 @@ public partial class MainWindow : Window
         return db >= 0 ? $"+{db:F1}" : $"{db:F1}";
     }
 
-    private void SlEqBass_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    private static string FreqLabel(float f) =>
+        f >= 1000 ? $"{f / 1000:0.##}k" : $"{(int)f}";
+
+    private void BuildEqSliders()
     {
-        if (TbEqBass == null) return;
-        TbEqBass.Text = EqDb(SlEqBass.Value);
-        if (_connected && _eqSync)
-            _serial.Send($"eq bass {(int)SlEqBass.Value}");
+        for (int i = 0; i < EqBands; i++)
+        {
+            int idx = i;
+            var sp = new StackPanel { Width = 32, HorizontalAlignment = HorizontalAlignment.Center };
+
+            var dbLbl = new TextBlock {
+                Text = " 0.0", FontFamily = new FontFamily("Consolas"), FontSize = 9,
+                Foreground = new SolidColorBrush(Color.FromRgb(0x89, 0xb4, 0xfa)),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            _eqDbLabels[idx] = dbLbl;
+
+            var sl = new Slider {
+                Orientation = Orientation.Vertical, Height = 80,
+                Minimum = 0, Maximum = 200, Value = 100,
+                IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Center,
+                SmallChange = 1, LargeChange = 10
+            };
+            sl.ValueChanged += (_, _) => {
+                if (_eqDbLabels[idx] == null) return;
+                _eqDbLabels[idx].Text = EqDb(sl.Value);
+                if (_connected && _eqSync)
+                    _serial.Send($"eq band {idx} {(int)sl.Value}");
+            };
+            _eqSliders[idx] = sl;
+
+            var freqLbl = new TextBlock {
+                Text = FreqLabel(EqFreqs[idx]),
+                Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xad, 0xc8)),
+                FontSize = 9, HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+
+            sp.Children.Add(dbLbl);
+            sp.Children.Add(sl);
+            sp.Children.Add(freqLbl);
+            EqPanel.Children.Add(sp);
+        }
     }
 
-    private void SlEqMid_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+    private void BtnEqReset_Click(object sender, RoutedEventArgs e)
     {
-        if (TbEqMid == null) return;
-        TbEqMid.Text = EqDb(SlEqMid.Value);
-        if (_connected && _eqSync)
-            _serial.Send($"eq mid {(int)SlEqMid.Value}");
-    }
+        var r = MessageBox.Show(
+            "Reset all 32 EQ bands to flat (0 dB)?",
+            "Confirm Reset", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (r != MessageBoxResult.Yes) return;
 
-    private void SlEqTreble_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        if (TbEqTreble == null) return;
-        TbEqTreble.Text = EqDb(SlEqTreble.Value);
-        if (_connected && _eqSync)
-            _serial.Send($"eq treble {(int)SlEqTreble.Value}");
+        _eqSync = false;
+        foreach (var s in _eqSliders) if (s != null) s.Value = 100;
+        _eqSync = true;
+        _serial.Send("eq reset");
     }
 
     private void ParseVersion(string line)
@@ -417,15 +461,17 @@ public partial class MainWindow : Window
         /* sync EQ sliders from board (only once after connect) */
         if (!_eqSync)
         {
-            var eqBs = Get("eq_bass"); var eqMs = Get("eq_mid"); var eqTs = Get("eq_treble");
-            if (!string.IsNullOrEmpty(eqBs) && int.TryParse(eqBs, out var eb) &&
-                !string.IsNullOrEmpty(eqMs) && int.TryParse(eqMs, out var em) &&
-                !string.IsNullOrEmpty(eqTs) && int.TryParse(eqTs, out var et))
+            var eqStr = Get("eq");
+            if (!string.IsNullOrEmpty(eqStr))
             {
-                _eqSync = true;
-                SlEqBass.Value   = eb;
-                SlEqMid.Value    = em;
-                SlEqTreble.Value = et;
+                var parts = eqStr.Split(',');
+                if (parts.Length == EqBands)
+                {
+                    _eqSync = true;
+                    for (int i = 0; i < EqBands; i++)
+                        if (int.TryParse(parts[i], out var ev) && _eqSliders[i] != null)
+                            _eqSliders[i].Value = ev;
+                }
             }
         }
 
