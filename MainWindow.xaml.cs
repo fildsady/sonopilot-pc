@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
+using IOPath = System.IO.Path;
 
 namespace RP2350Player;
 
@@ -21,8 +23,6 @@ public partial class MainWindow : Window
     private bool   _volumeSync  = false;
     private bool   _eqSync      = false;
     private bool   _mono        = false;
-    private bool   _uploading    = false;
-    private const int UploadChunk = 512;   /* must match firmware UPLOAD_CHUNK */
 
     private const int EqBands = 32;
     private static readonly float[] EqFreqs = {
@@ -34,14 +34,29 @@ public partial class MainWindow : Window
     private readonly Slider[]    _eqSliders  = new Slider[EqBands];
     private readonly TextBlock[] _eqDbLabels = new TextBlock[EqBands];
 
-    private const int HotkeyCount = 24;
+    private const int MixLayers = 9;
+    private const int MixMainLayer = 8;
+    private static readonly string[] LayerLabel =
+    {
+        "FLAC 0","FLAC 1","FLAC 2",
+        "WAV 0","WAV 1","WAV 2","WAV 3","WAV 4",
+        "MAIN"
+    };
+    private readonly TextBox[]   _layerPath   = new TextBox[MixLayers];
+    private readonly Slider[]    _layerVol    = new Slider[MixLayers];
+    private readonly TextBlock[] _layerVolLbl = new TextBlock[MixLayers];
+    private readonly Ellipse[]   _layerDot    = new Ellipse[MixLayers];
+    private readonly Button[]    _layerPlay   = new Button[MixLayers];
+    private readonly Button[]    _layerStop   = new Button[MixLayers];
+
+    private const int HotkeyCount = 20;
     private readonly TextBox[] _hkBoxes = new TextBox[HotkeyCount];
     private static readonly string HotkeyFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkeys.json");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkeys.json");
     private static readonly string LastPortFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lastport.txt");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "lastport.txt");
     private static readonly string WindowStateFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "windowstate.json");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "windowstate.json");
 
     public MainWindow()
     {
@@ -50,6 +65,7 @@ public partial class MainWindow : Window
         BuildHotkeySlots();
         LoadHotkeys();
         BuildEqSliders();
+        BuildMixerPanel();
         RefreshPorts();
 
         _serial.LineReceived += OnLineReceived;
@@ -67,9 +83,12 @@ public partial class MainWindow : Window
 
         /* Heartbeat — ask board for status every second */
         _beatTimer.Interval = TimeSpan.FromSeconds(1);
+        int _beatCount = 0;
         _beatTimer.Tick += (_, _) =>
         {
-            if (_connected) _serial.Send("status");
+            if (!_connected) return;
+            _serial.Send("status");
+            if (++_beatCount % 3 == 0) _serial.Send("layer list");
         };
     }
 
@@ -126,15 +145,21 @@ public partial class MainWindow : Window
         BtnGoto.IsEnabled      = on;
         BtnSyncTime.IsEnabled  = on;
         SlVolume.IsEnabled     = on;
-        BtnRepeatOne.IsEnabled    = on;
-        BtnRepeatAll.IsEnabled    = on;
-        BtnRepeatOff.IsEnabled    = on;
-        BtnRepeatSingle.IsEnabled = on;
+        BtnRepeatOne.IsEnabled = on;
+        BtnRepeatAll.IsEnabled = on;
+        BtnRepeatOff.IsEnabled = on;
         BtnAutoPlay.IsEnabled  = on;
         BtnEqReset.IsEnabled = on;
         foreach (var s in _eqSliders) if (s != null) s.IsEnabled = on;
         MonoToggleBorder.IsEnabled = on;
-        BtnSendFile.IsEnabled = on && !_uploading;
+        for (int i = 0; i < MixLayers; i++)
+        {
+            if (_layerPlay[i] != null) _layerPlay[i].IsEnabled = on && i < MixMainLayer;
+            if (_layerStop[i] != null) _layerStop[i].IsEnabled = on && i < MixMainLayer;
+            if (_layerVol[i]  != null) _layerVol[i].IsEnabled  = on;
+            if (!on && _layerDot[i] != null)
+                _layerDot[i].Fill = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a));
+        }
         if (!on)
         {
             TbNowPlaying.Text  = "— Not connected —";
@@ -181,7 +206,6 @@ public partial class MainWindow : Window
     private void BtnRepeatOne_Click(object sender, RoutedEventArgs e) => _serial.Send("mode repeat_one");
     private void BtnRepeatAll_Click(object sender, RoutedEventArgs e) => _serial.Send("mode repeat_all");
     private void BtnRepeatOff_Click(object sender, RoutedEventArgs e) => _serial.Send("mode repeat_off");
-    private void BtnRepeatSingle_Click(object sender, RoutedEventArgs e) => _serial.Send("mode repeat_single");
     private void BtnAutoPlay_Click (object sender, RoutedEventArgs e) =>
         _serial.Send(_autoPlay ? "mode autoplay_off" : "mode autoplay_on");
 
@@ -190,14 +214,12 @@ public partial class MainWindow : Window
 
     private void UpdateModeButtons()
     {
-        BtnRepeatOne.Background    = _repeatMode == "one"    ? BrushActive : BrushInactive;
-        BtnRepeatAll.Background    = _repeatMode == "all"    ? BrushActive : BrushInactive;
-        BtnRepeatOff.Background    = _repeatMode == "off"    ? BrushActive : BrushInactive;
-        BtnRepeatSingle.Background = _repeatMode == "single" ? BrushActive : BrushInactive;
-        BtnRepeatOne.Foreground    = _repeatMode == "one"    ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
-        BtnRepeatAll.Foreground    = _repeatMode == "all"    ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
-        BtnRepeatOff.Foreground    = _repeatMode == "off"    ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
-        BtnRepeatSingle.Foreground = _repeatMode == "single" ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
+        BtnRepeatOne.Background = _repeatMode == "one" ? BrushActive : BrushInactive;
+        BtnRepeatAll.Background = _repeatMode == "all" ? BrushActive : BrushInactive;
+        BtnRepeatOff.Background = _repeatMode == "off" ? BrushActive : BrushInactive;
+        BtnRepeatOne.Foreground = _repeatMode == "one" ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
+        BtnRepeatAll.Foreground = _repeatMode == "all" ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
+        BtnRepeatOff.Foreground = _repeatMode == "off" ? new SolidColorBrush(Color.FromRgb(0x1e,0x1e,0x2e)) : Brushes.White;
 
         BtnAutoPlay.Background = _autoPlay ? BrushActive : BrushInactive;
         BtnAutoPlay.Foreground = _autoPlay
@@ -219,54 +241,48 @@ public partial class MainWindow : Window
 
     private void BuildHotkeySlots()
     {
-        var hkBtnStyle = (Style)FindResource("HkPlayBtn");
         for (int i = 0; i < HotkeyCount; i++)
         {
             int idx = i;
-            var row = new Grid { Margin = new Thickness(0, 0, 0, 5) };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(20) });
+            var row = new Grid { Margin = new Thickness(0, 0, 0, 6) };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(18) });
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(26) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
 
-            /* amber numbered badge */
             var label = new TextBlock
             {
-                Text              = $"{i + 1:D2}",
-                Foreground        = new SolidColorBrush(Color.FromRgb(0xf9, 0xc7, 0x4f)),
-                FontFamily        = new FontFamily("Consolas"),
-                FontSize          = 10,
-                FontWeight        = FontWeights.Bold,
+                Text = $"{i + 1}",
+                Foreground = new SolidColorBrush(Color.FromRgb(0x6c, 0x70, 0x86)),
+                FontSize = 11,
                 VerticalAlignment = VerticalAlignment.Center
             };
             Grid.SetColumn(label, 0);
 
-            /* LCD-dark text box */
             var tb = new TextBox
             {
-                Background      = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
-                Foreground      = new SolidColorBrush(Color.FromRgb(0xb0, 0xc8, 0xff)),
-                BorderBrush     = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
-                CaretBrush      = new SolidColorBrush(Color.FromRgb(0x7a, 0xaa, 0xee)),
-                SelectionBrush  = new SolidColorBrush(Color.FromRgb(0x1e, 0x3a, 0x6a)),
+                Background  = new SolidColorBrush(Color.FromRgb(0x1e, 0x1e, 0x2e)),
+                Foreground  = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a)),
                 BorderThickness = new Thickness(1),
-                Padding         = new Thickness(4, 2, 4, 2),
-                FontFamily      = new FontFamily("Consolas"),
-                FontSize        = 10,
-                ToolTip         = $"Hotkey {i + 1}: filename without extension"
+                Padding  = new Thickness(4, 3, 4, 3),
+                FontSize = 11,
+                ToolTip  = $"Hotkey {i + 1}: filename without extension"
             };
             tb.TextChanged += (_, _) => SaveHotkeys();
             Grid.SetColumn(tb, 1);
             _hkBoxes[i] = tb;
 
-            /* green play button */
             var btn = new Button
             {
-                Content = "▶",
-                Style   = hkBtnStyle,
-                Width   = 24,
-                Height  = 22,
-                Margin  = new Thickness(3, 0, 0, 0),
-                ToolTip = $"Play hotkey {i + 1}"
+                Content         = "▶",
+                FontSize        = 11,
+                Background      = new SolidColorBrush(Color.FromRgb(0x31, 0x32, 0x44)),
+                Foreground      = Brushes.White,
+                BorderBrush     = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a)),
+                BorderThickness = new Thickness(1),
+                Margin          = new Thickness(4, 0, 0, 0),
+                Cursor          = System.Windows.Input.Cursors.Hand,
+                ToolTip         = $"Play hotkey {i + 1}"
             };
             btn.Click += (_, _) =>
             {
@@ -315,6 +331,8 @@ public partial class MainWindow : Window
                 ParseStatus(line);
             else if (line.StartsWith("VERSION "))
                 ParseVersion(line);
+            else if (line.StartsWith("LAYER "))
+                ParseLayerStatus(line);
             else
             {
                 Log(line);
@@ -346,7 +364,7 @@ public partial class MainWindow : Window
         for (int i = 0; i < EqBands; i++)
         {
             int idx = i;
-            var sp = new StackPanel { Width = 26, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(1, 0, 1, 0) };
+            var sp = new StackPanel { Width = 34, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0) };
 
             var dbLbl = new TextBlock {
                 Text = " 0.0", FontFamily = new FontFamily("Consolas"), FontSize = 10,
@@ -356,8 +374,7 @@ public partial class MainWindow : Window
             _eqDbLabels[idx] = dbLbl;
 
             var sl = new Slider {
-                Style = (Style)FindResource("AVFaderV"),
-                Height = 110,
+                Orientation = Orientation.Vertical, Height = 80,
                 Minimum = 0, Maximum = 200, Value = 100,
                 IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Center,
                 SmallChange = 1, LargeChange = 10
@@ -395,6 +412,25 @@ public partial class MainWindow : Window
         foreach (var s in _eqSliders) if (s != null) s.Value = 100;
         _eqSync = true;
         _serial.Send("eq reset");
+    }
+
+    private void ParseLayerStatus(string line)
+    {
+        /* LAYER id=X active=yes|no vol=Y (main) */
+        string GetField(string key)
+        {
+            int i = line.IndexOf(key + "=");
+            if (i < 0) return "";
+            int start = i + key.Length + 1;
+            int end = line.IndexOf(' ', start);
+            return end < 0 ? line[start..] : line[start..end];
+        }
+        if (!int.TryParse(GetField("id"), out int id)) return;
+        if (id < 0 || id >= MixLayers) return;
+        bool active = GetField("active") == "yes";
+        UpdateLayerDot(id, active);
+        if (int.TryParse(GetField("vol"), out int vol) && _layerVol[id] != null)
+            _layerVol[id].Value = vol;
     }
 
     private void ParseVersion(string line)
@@ -533,10 +569,141 @@ public partial class MainWindow : Window
     private void Log(string text)
     {
         TbLog.Text += text + "\n";
-        TbLog.ScrollToEnd();
+        LogScroll.ScrollToEnd();
     }
 
     private void BtnClearLog_Click(object sender, RoutedEventArgs e) => TbLog.Text = "";
+
+    // ── Mixer / MultiLayer ────────────────────────────────────────────────
+    private void BuildMixerPanel()
+    {
+        for (int i = 0; i < MixLayers; i++)
+        {
+            int idx = i;
+            bool isMain = (i == MixMainLayer);
+
+            var row = new Grid { Margin = new Thickness(0, 0, 0, 4) };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(20) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(64) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(36) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(36) });
+
+            /* status dot */
+            var dot = new Ellipse
+            {
+                Width = 8, Height = 8, VerticalAlignment = VerticalAlignment.Center,
+                Fill = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a))
+            };
+            Grid.SetColumn(dot, 0);
+            _layerDot[i] = dot;
+
+            /* label */
+            var lbl = new TextBlock
+            {
+                Text = LayerLabel[i], Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xad, 0xc8)),
+                FontSize = 11, VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = isMain ? FontWeights.Bold : FontWeights.Normal
+            };
+            Grid.SetColumn(lbl, 1);
+
+            /* path box */
+            var tb = new TextBox
+            {
+                Background = new SolidColorBrush(Color.FromRgb(0x18, 0x18, 0x25)),
+                Foreground = new SolidColorBrush(Color.FromRgb(0xcd, 0xd6, 0xf4)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a)),
+                BorderThickness = new Thickness(1), FontSize = 11, Padding = new Thickness(4, 2, 4, 2),
+                Margin = new Thickness(4, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center,
+                IsReadOnly = isMain, Opacity = isMain ? 0.5 : 1.0,
+                ToolTip = isMain ? "Main player — controlled by playlist" : "Filename on SD root (e.g. bass.flac)"
+            };
+            Grid.SetColumn(tb, 2);
+            _layerPath[i] = tb;
+
+            /* Play button */
+            var btnPlay = new Button
+            {
+                Content = "Play", Style = (Style)FindResource("DarkBtn"),
+                FontSize = 10, Padding = new Thickness(8, 3, 8, 3),
+                IsEnabled = false, Visibility = isMain ? Visibility.Collapsed : Visibility.Visible
+            };
+            btnPlay.Click += (_, _) =>
+            {
+                var fname = _layerPath[idx].Text.Trim();
+                if (!string.IsNullOrEmpty(fname))
+                    _serial.Send($"layer {idx} play {fname}");
+            };
+            Grid.SetColumn(btnPlay, 3);
+            _layerPlay[i] = btnPlay;
+
+            /* Stop button */
+            var btnStop = new Button
+            {
+                Content = "Stop", Style = (Style)FindResource("DarkBtn"),
+                FontSize = 10, Padding = new Thickness(8, 3, 8, 3),
+                IsEnabled = false, Visibility = isMain ? Visibility.Collapsed : Visibility.Visible
+            };
+            btnStop.Click += (_, _) => _serial.Send($"layer {idx} stop");
+            Grid.SetColumn(btnStop, 4);
+            _layerStop[i] = btnStop;
+
+            /* Vol label */
+            var volLbl = new TextBlock
+            {
+                Text = "100", Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xad, 0xc8)),
+                FontSize = 10, Width = 28, TextAlignment = TextAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0)
+            };
+            Grid.SetColumn(volLbl, 5);
+            _layerVolLbl[i] = volLbl;
+
+            /* Vol slider */
+            var sl = new Slider
+            {
+                Minimum = 0, Maximum = 200, Value = 100,
+                IsEnabled = false, VerticalAlignment = VerticalAlignment.Center
+            };
+            sl.ValueChanged += (_, e) =>
+            {
+                if (_layerVolLbl[idx] != null) _layerVolLbl[idx].Text = ((int)e.NewValue).ToString();
+                if (_connected) _serial.Send($"layer {idx} vol {(int)e.NewValue}");
+            };
+            Grid.SetColumn(sl, 6);
+            _layerVol[i] = sl;
+
+            /* Vol value label */
+            var volUnit = new TextBlock
+            {
+                Foreground = new SolidColorBrush(Color.FromRgb(0x6c, 0x70, 0x86)),
+                FontSize = 9, Text = "/200", VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(2, 0, 0, 0)
+            };
+            Grid.SetColumn(volUnit, 7);
+
+            row.Children.Add(dot);
+            row.Children.Add(lbl);
+            row.Children.Add(tb);
+            row.Children.Add(btnPlay);
+            row.Children.Add(btnStop);
+            row.Children.Add(volLbl);
+            row.Children.Add(sl);
+            row.Children.Add(volUnit);
+
+            MixerPanel.Children.Add(row);
+        }
+    }
+
+    private void UpdateLayerDot(int id, bool active)
+    {
+        if (id < 0 || id >= MixLayers || _layerDot[id] == null) return;
+        _layerDot[id].Fill = active
+            ? new SolidColorBrush(Color.FromRgb(0xa6, 0xe3, 0xa1))
+            : new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a));
+    }
 
     private void UpdateMonoToggleUI(bool mono)
     {
@@ -555,93 +722,6 @@ public partial class MainWindow : Window
         _mono = !_mono;
         UpdateMonoToggleUI(_mono);
         _serial.Send(_mono ? "mono on" : "mono off");
-    }
-
-    private async void BtnSendFile_Click(object sender, RoutedEventArgs e)
-    {
-        if (!_connected || _uploading) return;
-
-        var dlg = new Microsoft.Win32.OpenFileDialog
-        {
-            Filter = "Audio files (*.mp3;*.flac;*.wav)|*.mp3;*.flac;*.wav",
-            Title  = "Select audio file to upload to Pico SD card"
-        };
-        if (dlg.ShowDialog() != true) return;
-
-        var filePath = dlg.FileName;
-        var fileName = System.IO.Path.GetFileName(filePath);
-        byte[] data;
-        try { data = System.IO.File.ReadAllBytes(filePath); }
-        catch (Exception ex) { Log($"[UPLOAD] ERR: {ex.Message}"); return; }
-
-        _beatTimer.Stop();   /* prevent "status" bytes from corrupting binary stream */
-        _uploading = true;
-        BtnSendFile.IsEnabled = false;
-        UploadPanel.Visibility = System.Windows.Visibility.Visible;
-        UploadBar.Value = 0;
-        UploadPct.Text  = "0%";
-        UploadLabel.Text = $"📤 {fileName}";
-        Log($"[UPLOAD] Sending {fileName} ({data.Length:N0} bytes)…");
-
-        /* TaskCompletionSources for READY and per-chunk ACK */
-        TaskCompletionSource<bool>? pendingAck = null;
-        var readyTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        Action<string> handler = line =>
-        {
-            if (line == "READY")              readyTcs.TrySetResult(true);
-            else if (line == "ACK")           pendingAck?.TrySetResult(true);
-            else if (line.StartsWith("DONE")) pendingAck?.TrySetResult(true);
-            else if (line.StartsWith("ERR:")) { readyTcs.TrySetResult(false); pendingAck?.TrySetResult(false); }
-        };
-        _serial.LineReceived += handler;
-
-        bool success = false;
-        try
-        {
-            _serial.Send($"upload {fileName} {data.Length}");
-
-            /* wait for READY (10 second timeout) */
-            if (await Task.WhenAny(readyTcs.Task, Task.Delay(10000)) != readyTcs.Task
-                || !readyTcs.Task.Result)
-            {
-                Log("[UPLOAD] ERR: no READY from firmware"); return;
-            }
-
-            /* send chunks, wait for ACK after each */
-            int sent = 0;
-            while (sent < data.Length)
-            {
-                int count = Math.Min(UploadChunk, data.Length - sent);
-                pendingAck = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-                _serial.SendBytes(data, sent, count);
-                sent += count;
-
-                /* wait for ACK (10 second timeout per chunk) */
-                if (await Task.WhenAny(pendingAck.Task, Task.Delay(10000)) != pendingAck.Task
-                    || !pendingAck.Task.Result)
-                {
-                    Log("[UPLOAD] ERR: ACK timeout"); return;
-                }
-
-                double pct = (double)sent / data.Length * 100;
-                UploadBar.Value = pct;
-                UploadPct.Text  = $"{pct:F0}%";
-            }
-
-            Log($"[UPLOAD] Done ✓  {fileName}");
-            success = true;
-        }
-        finally
-        {
-            _serial.LineReceived -= handler;
-            _uploading = false;
-            if (_connected) _beatTimer.Start();
-            BtnSendFile.IsEnabled = _connected;
-            UploadPanel.Visibility = System.Windows.Visibility.Collapsed;
-            if (!success) Log("[UPLOAD] Transfer incomplete");
-        }
     }
 
     private void RestoreWindowState()
