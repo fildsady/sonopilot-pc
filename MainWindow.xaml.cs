@@ -51,7 +51,7 @@ public partial class MainWindow : Window
         public bool   Enabled  { get; set; } = true;
         public string Time     { get; set; } = "08:00";
         public string StopTime { get; set; } = "";      /* "" = no stop time */
-        public string File     { get; set; } = "";
+        public string Tracks   { get; set; } = "";     /* comma-separated, e.g. "song1,song2" */
         public int    Loops    { get; set; } = 1;       /* 0 = infinite */
         public bool[] Days     { get; set; } = new bool[7] { true,true,true,true,true,true,true };
     }
@@ -620,16 +620,16 @@ public partial class MainWindow : Window
 
         var tbFile = new TextBox
         {
-            Text = entry.File,
+            Text = entry.Tracks,
             Background = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
             Foreground = new SolidColorBrush(Color.FromRgb(0xb0, 0xc8, 0xff)),
             BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
             BorderThickness = new Thickness(1), FontFamily = new FontFamily("Consolas"),
             FontSize = 11, Padding = new Thickness(4, 2, 4, 2),
             Margin = new Thickness(4, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center,
-            ToolTip = "Filename without extension"
+            ToolTip = "Tracks (no ext), comma-separated: song1,song2,song3"
         };
-        tbFile.TextChanged += (_, _) => { entry.File = tbFile.Text.Trim(); SaveSchedules(); };
+        tbFile.TextChanged += (_, _) => { entry.Tracks = tbFile.Text.Trim(); SaveSchedules(); };
         Grid.SetColumn(tbFile, 3);
 
         var tbLoops = new TextBox
@@ -826,14 +826,14 @@ public partial class MainWindow : Window
         int sent = 0;
         foreach (var e in _schedules)
         {
-            if (string.IsNullOrEmpty(e.File)) continue;
+            if (string.IsNullOrEmpty(e.Tracks)) continue;
             string days = "";
             foreach (var d in e.Days) days += d ? "1" : "0";
             string stopPart = string.IsNullOrEmpty(e.StopTime) ? "" : $" stop={e.StopTime}";
-            string cmd = $"sched add time={e.Time}{stopPart} file={e.File} loops={e.Loops} days={days} enabled={(e.Enabled ? 1 : 0)}";
+            string cmd = $"sched add time={e.Time}{stopPart} tracks={e.Tracks} loops={e.Loops} days={days} enabled={(e.Enabled ? 1 : 0)}";
             bool ok = await Send(cmd);
             if (ok) sent++;
-            else    Log($"[SCHED→PICO] ERR: add {e.File}");
+            else    Log($"[SCHED→PICO] ERR: add {e.Tracks}");
         }
 
         if (!await Send("sched save"))
@@ -931,10 +931,11 @@ public partial class MainWindow : Window
                     for (int d = 0; d < 7 && d < kv[1].Length; d++)
                         e.Days[d] = kv[1][d] == '1';
                     break;
-                case "file":    e.File     = kv[1]; break;
+                case "tracks":  e.Tracks   = kv[1]; break;
+                case "file":    e.Tracks   = kv[1]; break;  // backward compat
             }
         }
-        return string.IsNullOrEmpty(e.File) ? null : e;
+        return string.IsNullOrEmpty(e.Tracks) ? null : e;
     }
 
     /* ── Save / Load schedule file ───────────────────────────────────────── */
@@ -1006,15 +1007,15 @@ public partial class MainWindow : Window
 
         foreach (var entry in _schedules)
         {
-            if (!entry.Enabled || string.IsNullOrEmpty(entry.File)) continue;
+            if (!entry.Enabled || string.IsNullOrEmpty(entry.Tracks)) continue;
             if (entry.Time != nowHHMM || !entry.Days[dayIdx]) continue;
             _lastSchedMinute     = key;
-            _schedFile           = entry.File;
+            _schedFile           = entry.Tracks;
             _schedLoopsRemaining = entry.Loops == 0 ? -1 : entry.Loops - 1;
-            _serial.Send($"goto {entry.File}");
+            _serial.Send($"goto {entry.Tracks}");
             string loopStr = entry.Loops == 0 ? "∞" : $"{entry.Loops}×";
-            Log($"[SCHED] {nowHHMM} → {entry.File}  ({loopStr})");
-            TbSchedStatus.Text = $"Last: {nowHHMM}  {entry.File}  {loopStr}";
+            Log($"[SCHED] {nowHHMM} → {entry.Tracks}  ({loopStr})");
+            TbSchedStatus.Text = $"Last: {nowHHMM}  {entry.Tracks}  {loopStr}";
             break;
         }
     }

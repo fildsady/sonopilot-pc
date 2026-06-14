@@ -668,7 +668,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="1" Text="Start"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
                         <TextBlock Grid.Column="2" Text="Stop"                    Foreground="#f38ba8" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                        <TextBlock Grid.Column="3" Text="File (SD root — no ext)" Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                        <TextBlock Grid.Column="3" Text="Tracks (comma-sep, no ext)" Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="6,0,0,0"/>
                         <TextBlock Grid.Column="4" Text="Loops"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <TextBlock Grid.Column="5" Text="Mo   Tu   We   Th   Fr   Sa   Su" Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"/>
                     </Grid>
