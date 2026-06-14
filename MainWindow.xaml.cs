@@ -328,7 +328,7 @@ public partial class MainWindow : Window
         for (int i = 0; i < EqBands; i++)
         {
             int idx = i;
-            var sp = new StackPanel { Width = 44, HorizontalAlignment = HorizontalAlignment.Center };
+            var sp = new StackPanel { Width = 34, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0) };
 
             var dbLbl = new TextBlock {
                 Text = " 0.0", FontFamily = new FontFamily("Consolas"), FontSize = 10,
