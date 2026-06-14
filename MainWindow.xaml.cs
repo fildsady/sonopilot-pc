@@ -609,31 +609,14 @@ public partial class MainWindow : Window
         chk.Unchecked += (_, _) => { entry.Enabled = false; SaveSchedules(); };
         Grid.SetColumn(chk, 0);
 
-        var tbTime = new TextBox
-        {
-            Text = entry.Time,
-            Background = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
-            Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xe3, 0xa1)),
-            BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
-            BorderThickness = new Thickness(1), FontFamily = new FontFamily("Consolas"),
-            FontSize = 13, Padding = new Thickness(4, 2, 4, 2),
-            VerticalAlignment = VerticalAlignment.Center, ToolTip = "24-hour time, e.g. 08:30"
-        };
-        tbTime.TextChanged += (_, _) => { entry.Time = tbTime.Text.Trim(); SaveSchedules(); };
-        Grid.SetColumn(tbTime, 1);
+        var timeBox = MakeTimePicker(entry.Time, Color.FromRgb(0xa6, 0xe3, 0xa1),
+                                      v => { entry.Time = v; SaveSchedules(); });
+        Grid.SetColumn(timeBox, 1);
 
-        var tbStop = new TextBox
-        {
-            Text = entry.StopTime,
-            Background = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
-            Foreground = new SolidColorBrush(Color.FromRgb(0xf3, 0x8b, 0xa8)),
-            BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
-            BorderThickness = new Thickness(1), FontFamily = new FontFamily("Consolas"),
-            FontSize = 13, Padding = new Thickness(4, 2, 4, 2), Margin = new Thickness(4, 0, 0, 0),
-            VerticalAlignment = VerticalAlignment.Center, ToolTip = "Stop time (HH:MM) — leave blank for no stop"
-        };
-        tbStop.TextChanged += (_, _) => { entry.StopTime = tbStop.Text.Trim(); SaveSchedules(); };
-        Grid.SetColumn(tbStop, 2);
+        var stopBox = MakeTimePicker(entry.StopTime, Color.FromRgb(0xf3, 0x8b, 0xa8),
+                                     v => { entry.StopTime = v; SaveSchedules(); },
+                                     allowEmpty: true);
+        Grid.SetColumn(stopBox, 2);
 
         var tbFile = new TextBox
         {
@@ -700,13 +683,95 @@ public partial class MainWindow : Window
         Grid.SetColumn(btnDel, 6);
 
         row.Children.Add(chk);
-        row.Children.Add(tbTime);
-        row.Children.Add(tbStop);
+        row.Children.Add(timeBox);
+        row.Children.Add(stopBox);
         row.Children.Add(tbFile);
         row.Children.Add(tbLoops);
         row.Children.Add(dayPanel);
         row.Children.Add(btnDel);
         return row;
+    }
+
+    /* Two-box HH:MM picker — colon is a label, cannot be deleted.
+     * allowEmpty: if true, both boxes blank = no time (used for Stop). */
+    private static FrameworkElement MakeTimePicker(
+        string initVal, Color fg, Action<string> onChange, bool allowEmpty = false)
+    {
+        string hh = "", mm = "";
+        if (!string.IsNullOrEmpty(initVal) && initVal.Length == 5 && initVal[2] == ':')
+        { hh = initVal[..2]; mm = initVal[3..]; }
+
+        var bg    = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14));
+        var bd    = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42));
+        var fgBr  = new SolidColorBrush(fg);
+        var font  = new FontFamily("Consolas");
+
+        TextBox MakeSegment(string init, int max) => new TextBox
+        {
+            Text            = init,
+            Width           = 22, MaxLength = 2,
+            Background      = bg, Foreground = fgBr,
+            BorderBrush     = bd, BorderThickness = new Thickness(1),
+            FontFamily      = font, FontSize = 13,
+            Padding         = new Thickness(2, 2, 2, 2),
+            TextAlignment   = TextAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+
+        var tbH = MakeSegment(hh, 23);
+        var tbM = MakeSegment(mm, 59);
+
+        void Notify()
+        {
+            string h = tbH.Text.Trim(), m = tbM.Text.Trim();
+            if (allowEmpty && h == "" && m == "") { onChange(""); return; }
+            if (int.TryParse(h, out int hv) && int.TryParse(m, out int mv))
+            {
+                hv = Math.Clamp(hv, 0, 23);
+                mv = Math.Clamp(mv, 0, 59);
+                onChange($"{hv:D2}:{mv:D2}");
+            }
+        }
+
+        tbH.PreviewTextInput += (_, e) =>
+        {
+            e.Handled = !char.IsDigit(e.Text, 0);
+        };
+        tbM.PreviewTextInput += (_, e) =>
+        {
+            e.Handled = !char.IsDigit(e.Text, 0);
+        };
+
+        /* Auto-advance to minutes after 2 digits */
+        tbH.TextChanged += (_, _) =>
+        {
+            if (tbH.Text.Length == 2) tbM.Focus();
+            Notify();
+        };
+        tbM.TextChanged += (_, _) => Notify();
+
+        /* Lost focus: pad with zeros */
+        tbH.LostFocus += (_, _) =>
+        {
+            if (tbH.Text.Length == 1) tbH.Text = "0" + tbH.Text;
+        };
+        tbM.LostFocus += (_, _) =>
+        {
+            if (tbM.Text.Length == 1) tbM.Text = "0" + tbM.Text;
+        };
+
+        var colon = new TextBlock
+        {
+            Text = ":", Foreground = new SolidColorBrush(Color.FromRgb(0x58, 0x58, 0x72)),
+            FontFamily = font, FontSize = 13,
+            VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(1, 0, 1, 0)
+        };
+
+        var panel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        panel.Children.Add(tbH);
+        panel.Children.Add(colon);
+        panel.Children.Add(tbM);
+        return panel;
     }
 
     private static void ApplyDayBtnStyle(Button btn, bool active)
