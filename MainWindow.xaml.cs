@@ -328,7 +328,7 @@ public partial class MainWindow : Window
         for (int i = 0; i < EqBands; i++)
         {
             int idx = i;
-            var sp = new StackPanel { Width = 48, HorizontalAlignment = HorizontalAlignment.Center };
+            var sp = new StackPanel { Width = 44, HorizontalAlignment = HorizontalAlignment.Center };
 
             var dbLbl = new TextBlock {
                 Text = " 0.0", FontFamily = new FontFamily("Consolas"), FontSize = 10,
@@ -338,7 +338,7 @@ public partial class MainWindow : Window
             _eqDbLabels[idx] = dbLbl;
 
             var sl = new Slider {
-                Orientation = Orientation.Vertical, Height = 80,
+                Orientation = Orientation.Vertical, Height = 140,
                 Minimum = 0, Maximum = 200, Value = 100,
                 IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Center,
                 SmallChange = 1, LargeChange = 10

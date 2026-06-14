@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RP2350Player.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RP2350 Player  v1.0" Icon="/RP2350Player;component/app.ico" Height="750" Width="1280"
+        Title="RP2350 Player  v1.0" Icon="/RP2350Player;component/app.ico" Height="860" Width="1720"
         Background="#1e1e2e" Foreground="White"
         ResizeMode="CanMinimize">
 
@@ -284,10 +284,7 @@
                     <TextBlock Text="  0=-12dB  100=flat  200=+12dB" Foreground="#45475a"
                                FontSize="10" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </StackPanel>
-                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Disabled" Height="125">
-                    <StackPanel x:Name="EqPanel" Orientation="Horizontal"/>
-                </ScrollViewer>
+                <StackPanel x:Name="EqPanel" Grid.Row="1" Orientation="Horizontal"/>
             </Grid>
         </Border>
 
