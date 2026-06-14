@@ -62,7 +62,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -280,45 +279,122 @@
             </Grid>
         </Border>
 
-        <!-- 32-Band EQ -->
-        <Border Grid.Row="4" Background="#313244" CornerRadius="6" Padding="12,8" Margin="0,0,0,12">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
-                    <TextBlock Text="32-Band EQ" Foreground="#a6adc8" FontSize="11"
-                               VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <Button x:Name="BtnEqReset" Content="Flat Reset" Style="{StaticResource DarkBtn}"
-                            FontSize="10" Padding="8,3" IsEnabled="False" Click="BtnEqReset_Click"/>
-                    <TextBlock Text="  0=-12dB  100=flat  200=+12dB" Foreground="#45475a"
-                               FontSize="10" VerticalAlignment="Center" Margin="12,0,0,0"/>
-                </StackPanel>
-                <StackPanel x:Name="EqPanel" Grid.Row="1" Orientation="Horizontal"/>
-            </Grid>
-        </Border>
+        <!-- Tab: Player (EQ+Log) | Mixer -->
+        <TabControl Grid.Row="4" Grid.RowSpan="2" Background="Transparent"
+                    BorderBrush="#45475a" BorderThickness="1">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Background"   Value="#313244"/>
+                    <Setter Property="Foreground"   Value="#cdd6f4"/>
+                    <Setter Property="BorderBrush"  Value="#45475a"/>
+                    <Setter Property="Padding"      Value="14,6"/>
+                    <Setter Property="FontSize"     Value="12"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                        BorderBrush="#45475a" BorderThickness="1,1,1,0"
+                                        CornerRadius="4,4,0,0" Padding="{TemplateBinding Padding}"
+                                        Margin="0,0,2,0">
+                                    <ContentPresenter ContentSource="Header"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#1e1e2e"/>
+                                        <Setter Property="Foreground" Value="#89b4fa"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#45475a"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
 
-        <!-- Log -->
-        <Border Grid.Row="5" Background="#181825" CornerRadius="6" Padding="2">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Margin="8,6,8,4">
-                    <TextBlock Text="Serial Log" Foreground="#6c7086" FontSize="11"/>
-                    <Button x:Name="BtnClearLog" Content="Clear" Style="{StaticResource DarkBtn}"
-                            FontSize="10" Padding="6,2" Margin="8,0,0,0" Click="BtnClearLog_Click"/>
-                </StackPanel>
-                <ScrollViewer Grid.Row="1" x:Name="LogScroll" VerticalScrollBarVisibility="Auto">
-                    <TextBlock x:Name="TbLog" FontFamily="Consolas" FontSize="11"
-                               Foreground="#cdd6f4" Padding="8,4" TextWrapping="Wrap"/>
-                </ScrollViewer>
-            </Grid>
-        </Border>
+            <!-- ── Tab 1: Player ── -->
+            <TabItem Header="Player">
+                <Grid Background="#1e1e2e">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 32-Band EQ -->
+                    <Border Grid.Row="0" Background="#313244" CornerRadius="6" Padding="12,8" Margin="4,4,4,4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                                <TextBlock Text="32-Band EQ" Foreground="#a6adc8" FontSize="11"
+                                           VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <Button x:Name="BtnEqReset" Content="Flat Reset" Style="{StaticResource DarkBtn}"
+                                        FontSize="10" Padding="8,3" IsEnabled="False" Click="BtnEqReset_Click"/>
+                                <TextBlock Text="  0=-12dB  100=flat  200=+12dB" Foreground="#45475a"
+                                           FontSize="10" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            </StackPanel>
+                            <StackPanel x:Name="EqPanel" Grid.Row="1" Orientation="Horizontal"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Serial Log -->
+                    <Border Grid.Row="1" Background="#181825" CornerRadius="6" Padding="2" Margin="4,0,4,4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="8,6,8,4">
+                                <TextBlock Text="Serial Log" Foreground="#6c7086" FontSize="11"/>
+                                <Button x:Name="BtnClearLog" Content="Clear" Style="{StaticResource DarkBtn}"
+                                        FontSize="10" Padding="6,2" Margin="8,0,0,0" Click="BtnClearLog_Click"/>
+                            </StackPanel>
+                            <ScrollViewer Grid.Row="1" x:Name="LogScroll" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="TbLog" FontFamily="Consolas" FontSize="11"
+                                           Foreground="#cdd6f4" Padding="8,4" TextWrapping="Wrap"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ── Tab 2: MultiLayer / Mixer ── -->
+            <TabItem Header="MultiLayer">
+                <Border Background="#1e1e2e" Padding="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <!-- Header row -->
+                        <Grid Grid.Row="0" Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="36"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="36"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="Layer"    Foreground="#6c7086" FontSize="10"/>
+                            <TextBlock Grid.Column="2" Text="File (on SD root)" Foreground="#6c7086" FontSize="10" Margin="4,0,0,0"/>
+                            <TextBlock Grid.Column="5" Text="Vol"      Foreground="#6c7086" FontSize="10" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="" />
+                        </Grid>
+                        <!-- Layer rows (built in code-behind) -->
+                        <StackPanel x:Name="MixerPanel" Grid.Row="1"/>
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
         <!-- Hotkey panel -->
-        <Border Grid.Column="2" Grid.RowSpan="6" Background="#313244" CornerRadius="6" Padding="10,10">
+        <Border Grid.Column="2" Grid.RowSpan="5" Background="#313244" CornerRadius="6" Padding="10,10">
             <StackPanel>
                 <TextBlock Text="Hotkeys" Foreground="#a6adc8" FontSize="11"
                            Margin="0,0,0,8" HorizontalAlignment="Center"/>

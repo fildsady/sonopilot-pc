@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
+using IOPath = System.IO.Path;
 
 namespace RP2350Player;
 
@@ -32,14 +34,29 @@ public partial class MainWindow : Window
     private readonly Slider[]    _eqSliders  = new Slider[EqBands];
     private readonly TextBlock[] _eqDbLabels = new TextBlock[EqBands];
 
+    private const int MixLayers = 9;
+    private const int MixMainLayer = 8;
+    private static readonly string[] LayerLabel =
+    {
+        "FLAC 0","FLAC 1","FLAC 2",
+        "WAV 0","WAV 1","WAV 2","WAV 3","WAV 4",
+        "MAIN"
+    };
+    private readonly TextBox[]   _layerPath   = new TextBox[MixLayers];
+    private readonly Slider[]    _layerVol    = new Slider[MixLayers];
+    private readonly TextBlock[] _layerVolLbl = new TextBlock[MixLayers];
+    private readonly Ellipse[]   _layerDot    = new Ellipse[MixLayers];
+    private readonly Button[]    _layerPlay   = new Button[MixLayers];
+    private readonly Button[]    _layerStop   = new Button[MixLayers];
+
     private const int HotkeyCount = 20;
     private readonly TextBox[] _hkBoxes = new TextBox[HotkeyCount];
     private static readonly string HotkeyFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkeys.json");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkeys.json");
     private static readonly string LastPortFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lastport.txt");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "lastport.txt");
     private static readonly string WindowStateFile =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "windowstate.json");
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "windowstate.json");
 
     public MainWindow()
     {
@@ -48,6 +65,7 @@ public partial class MainWindow : Window
         BuildHotkeySlots();
         LoadHotkeys();
         BuildEqSliders();
+        BuildMixerPanel();
         RefreshPorts();
 
         _serial.LineReceived += OnLineReceived;
@@ -65,9 +83,12 @@ public partial class MainWindow : Window
 
         /* Heartbeat — ask board for status every second */
         _beatTimer.Interval = TimeSpan.FromSeconds(1);
+        int _beatCount = 0;
         _beatTimer.Tick += (_, _) =>
         {
-            if (_connected) _serial.Send("status");
+            if (!_connected) return;
+            _serial.Send("status");
+            if (++_beatCount % 3 == 0) _serial.Send("layer list");
         };
     }
 
@@ -131,6 +152,14 @@ public partial class MainWindow : Window
         BtnEqReset.IsEnabled = on;
         foreach (var s in _eqSliders) if (s != null) s.IsEnabled = on;
         MonoToggleBorder.IsEnabled = on;
+        for (int i = 0; i < MixLayers; i++)
+        {
+            if (_layerPlay[i] != null) _layerPlay[i].IsEnabled = on && i < MixMainLayer;
+            if (_layerStop[i] != null) _layerStop[i].IsEnabled = on && i < MixMainLayer;
+            if (_layerVol[i]  != null) _layerVol[i].IsEnabled  = on;
+            if (!on && _layerDot[i] != null)
+                _layerDot[i].Fill = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a));
+        }
         if (!on)
         {
             TbNowPlaying.Text  = "— Not connected —";
@@ -302,6 +331,8 @@ public partial class MainWindow : Window
                 ParseStatus(line);
             else if (line.StartsWith("VERSION "))
                 ParseVersion(line);
+            else if (line.StartsWith("LAYER "))
+                ParseLayerStatus(line);
             else
             {
                 Log(line);
@@ -381,6 +412,25 @@ public partial class MainWindow : Window
         foreach (var s in _eqSliders) if (s != null) s.Value = 100;
         _eqSync = true;
         _serial.Send("eq reset");
+    }
+
+    private void ParseLayerStatus(string line)
+    {
+        /* LAYER id=X active=yes|no vol=Y (main) */
+        string GetField(string key)
+        {
+            int i = line.IndexOf(key + "=");
+            if (i < 0) return "";
+            int start = i + key.Length + 1;
+            int end = line.IndexOf(' ', start);
+            return end < 0 ? line[start..] : line[start..end];
+        }
+        if (!int.TryParse(GetField("id"), out int id)) return;
+        if (id < 0 || id >= MixLayers) return;
+        bool active = GetField("active") == "yes";
+        UpdateLayerDot(id, active);
+        if (int.TryParse(GetField("vol"), out int vol) && _layerVol[id] != null)
+            _layerVol[id].Value = vol;
     }
 
     private void ParseVersion(string line)
@@ -523,6 +573,137 @@ public partial class MainWindow : Window
     }
 
     private void BtnClearLog_Click(object sender, RoutedEventArgs e) => TbLog.Text = "";
+
+    // ── Mixer / MultiLayer ────────────────────────────────────────────────
+    private void BuildMixerPanel()
+    {
+        for (int i = 0; i < MixLayers; i++)
+        {
+            int idx = i;
+            bool isMain = (i == MixMainLayer);
+
+            var row = new Grid { Margin = new Thickness(0, 0, 0, 4) };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(20) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(64) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(36) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(36) });
+
+            /* status dot */
+            var dot = new Ellipse
+            {
+                Width = 8, Height = 8, VerticalAlignment = VerticalAlignment.Center,
+                Fill = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a))
+            };
+            Grid.SetColumn(dot, 0);
+            _layerDot[i] = dot;
+
+            /* label */
+            var lbl = new TextBlock
+            {
+                Text = LayerLabel[i], Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xad, 0xc8)),
+                FontSize = 11, VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = isMain ? FontWeights.Bold : FontWeights.Normal
+            };
+            Grid.SetColumn(lbl, 1);
+
+            /* path box */
+            var tb = new TextBox
+            {
+                Background = new SolidColorBrush(Color.FromRgb(0x18, 0x18, 0x25)),
+                Foreground = new SolidColorBrush(Color.FromRgb(0xcd, 0xd6, 0xf4)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a)),
+                BorderThickness = new Thickness(1), FontSize = 11, Padding = new Thickness(4, 2, 4, 2),
+                Margin = new Thickness(4, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center,
+                IsReadOnly = isMain, Opacity = isMain ? 0.5 : 1.0,
+                ToolTip = isMain ? "Main player — controlled by playlist" : "Filename on SD root (e.g. bass.flac)"
+            };
+            Grid.SetColumn(tb, 2);
+            _layerPath[i] = tb;
+
+            /* Play button */
+            var btnPlay = new Button
+            {
+                Content = "Play", Style = (Style)FindResource("DarkBtn"),
+                FontSize = 10, Padding = new Thickness(8, 3, 8, 3),
+                IsEnabled = false, Visibility = isMain ? Visibility.Collapsed : Visibility.Visible
+            };
+            btnPlay.Click += (_, _) =>
+            {
+                var fname = _layerPath[idx].Text.Trim();
+                if (!string.IsNullOrEmpty(fname))
+                    _serial.Send($"layer {idx} play {fname}");
+            };
+            Grid.SetColumn(btnPlay, 3);
+            _layerPlay[i] = btnPlay;
+
+            /* Stop button */
+            var btnStop = new Button
+            {
+                Content = "Stop", Style = (Style)FindResource("DarkBtn"),
+                FontSize = 10, Padding = new Thickness(8, 3, 8, 3),
+                IsEnabled = false, Visibility = isMain ? Visibility.Collapsed : Visibility.Visible
+            };
+            btnStop.Click += (_, _) => _serial.Send($"layer {idx} stop");
+            Grid.SetColumn(btnStop, 4);
+            _layerStop[i] = btnStop;
+
+            /* Vol label */
+            var volLbl = new TextBlock
+            {
+                Text = "100", Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xad, 0xc8)),
+                FontSize = 10, Width = 28, TextAlignment = TextAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0)
+            };
+            Grid.SetColumn(volLbl, 5);
+            _layerVolLbl[i] = volLbl;
+
+            /* Vol slider */
+            var sl = new Slider
+            {
+                Minimum = 0, Maximum = 200, Value = 100,
+                IsEnabled = false, VerticalAlignment = VerticalAlignment.Center
+            };
+            sl.ValueChanged += (_, e) =>
+            {
+                if (_layerVolLbl[idx] != null) _layerVolLbl[idx].Text = ((int)e.NewValue).ToString();
+                if (_connected) _serial.Send($"layer {idx} vol {(int)e.NewValue}");
+            };
+            Grid.SetColumn(sl, 6);
+            _layerVol[i] = sl;
+
+            /* Vol value label */
+            var volUnit = new TextBlock
+            {
+                Foreground = new SolidColorBrush(Color.FromRgb(0x6c, 0x70, 0x86)),
+                FontSize = 9, Text = "/200", VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(2, 0, 0, 0)
+            };
+            Grid.SetColumn(volUnit, 7);
+
+            row.Children.Add(dot);
+            row.Children.Add(lbl);
+            row.Children.Add(tb);
+            row.Children.Add(btnPlay);
+            row.Children.Add(btnStop);
+            row.Children.Add(volLbl);
+            row.Children.Add(sl);
+            row.Children.Add(volUnit);
+
+            MixerPanel.Children.Add(row);
+        }
+    }
+
+    private void UpdateLayerDot(int id, bool active)
+    {
+        if (id < 0 || id >= MixLayers || _layerDot[id] == null) return;
+        _layerDot[id].Fill = active
+            ? new SolidColorBrush(Color.FromRgb(0xa6, 0xe3, 0xa1))
+            : new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a));
+    }
 
     private void UpdateMonoToggleUI(bool mono)
     {
