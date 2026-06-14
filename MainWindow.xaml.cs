@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     private bool   _autoPlay    = true;
     private bool   _volumeSync  = false;
     private bool   _eqSync      = false;
+    private bool   _mono        = false;
 
     private const int EqBands = 32;
     private static readonly float[] EqFreqs = {
@@ -110,7 +111,7 @@ public partial class MainWindow : Window
     private void SetConnected(bool on)
     {
         _connected = on;
-        if (!on) { _beatTimer.Stop(); TbFirmware.Text = ""; _volumeSync = false; _eqSync = false; }
+        if (!on) { _beatTimer.Stop(); TbFirmware.Text = ""; _volumeSync = false; _eqSync = false; _mono = false; UpdateMonoToggleUI(false); }
         BtnConnect.Content    = on ? "Disconnect" : "Connect";
         StatusDot.Fill        = on
             ? Brushes.LightGreen
@@ -129,6 +130,7 @@ public partial class MainWindow : Window
         BtnAutoPlay.IsEnabled  = on;
         BtnEqReset.IsEnabled = on;
         foreach (var s in _eqSliders) if (s != null) s.IsEnabled = on;
+        MonoToggleBorder.IsEnabled = on;
         if (!on)
         {
             TbNowPlaying.Text  = "— Not connected —";
@@ -453,6 +455,14 @@ public partial class MainWindow : Window
         if (!string.IsNullOrEmpty(samplehz) && long.TryParse(samplehz, out var hz))
             TbFileSampleRate.Text = hz >= 1000 ? $"{hz / 1000.0:0.###} kHz" : $"{hz} Hz";
 
+        /* sync mono toggle from board (every status update) */
+        var monoStr = Get("mono");
+        if (!string.IsNullOrEmpty(monoStr))
+        {
+            bool isMono = monoStr == "on";
+            if (isMono != _mono) { _mono = isMono; UpdateMonoToggleUI(isMono); }
+        }
+
         /* sync volume slider from board (only once after connect) */
         var volStr = Get("vol");
         if (!_volumeSync && !string.IsNullOrEmpty(volStr) && int.TryParse(volStr, out var v))
@@ -513,6 +523,25 @@ public partial class MainWindow : Window
     }
 
     private void BtnClearLog_Click(object sender, RoutedEventArgs e) => TbLog.Text = "";
+
+    private void UpdateMonoToggleUI(bool mono)
+    {
+        MonoToggleBorder.Background = new SolidColorBrush(
+            mono ? Color.FromRgb(0x89, 0xb4, 0xfa) : Color.FromRgb(0x45, 0x47, 0x5a));
+        TbMonoLabel.Text      = mono ? "MONO" : "STEREO";
+        TbMonoLabel.Foreground = new SolidColorBrush(
+            mono ? Color.FromRgb(0x1e, 0x1e, 0x2e) : Color.FromRgb(0xa6, 0xad, 0xc8));
+        MonoThumb.HorizontalAlignment = mono ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+        MonoThumb.Margin = mono ? new Thickness(0, 0, 3, 0) : new Thickness(3, 0, 0, 0);
+    }
+
+    private void MonoToggle_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (!_connected) return;
+        _mono = !_mono;
+        UpdateMonoToggleUI(_mono);
+        _serial.Send(_mono ? "mono on" : "mono off");
+    }
 
     private void RestoreWindowState()
     {

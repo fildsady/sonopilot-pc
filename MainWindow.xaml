@@ -265,6 +265,17 @@
                             ValueChanged="SlVolume_ValueChanged"/>
                     <TextBlock x:Name="TbVolume" Text="80%" Foreground="#cdd6f4" FontFamily="Consolas"
                                FontSize="12" VerticalAlignment="Center" Margin="6,0,0,0" Width="36"/>
+                    <!-- Mono/Stereo toggle -->
+                    <Border x:Name="MonoToggleBorder" Width="64" Height="24" CornerRadius="12"
+                            Background="#45475a" Margin="12,0,0,0" Cursor="Hand"
+                            MouseLeftButtonUp="MonoToggle_Click" IsEnabled="False">
+                        <Grid>
+                            <TextBlock x:Name="TbMonoLabel" Text="STEREO" FontSize="9" FontWeight="Bold"
+                                       Foreground="#a6adc8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Ellipse x:Name="MonoThumb" Width="18" Height="18" Fill="#cdd6f4"
+                                     HorizontalAlignment="Left" Margin="3,0,0,0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>
