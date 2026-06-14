@@ -338,7 +338,7 @@ public partial class MainWindow : Window
             _eqDbLabels[idx] = dbLbl;
 
             var sl = new Slider {
-                Orientation = Orientation.Vertical, Height = 140,
+                Orientation = Orientation.Vertical, Height = 112,
                 Minimum = 0, Maximum = 200, Value = 100,
                 IsEnabled = false, HorizontalAlignment = HorizontalAlignment.Center,
                 SmallChange = 1, LargeChange = 10
