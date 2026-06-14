@@ -31,7 +31,7 @@ public partial class MainWindow : Window
     private readonly Slider[]    _eqSliders  = new Slider[EqBands];
     private readonly TextBlock[] _eqDbLabels = new TextBlock[EqBands];
 
-    private const int HotkeyCount = 8;
+    private const int HotkeyCount = 20;
     private readonly TextBox[] _hkBoxes = new TextBox[HotkeyCount];
     private static readonly string HotkeyFile =
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkeys.json");
