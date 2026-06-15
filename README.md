@@ -1,4 +1,4 @@
-# PicoAudioCore — PC GUI v3.0 (Windows)
+# PicoAudioCore — PC GUI v3.1 (Windows)
 
 แอปพลิเคชัน **WPF (.NET 10, Windows)** สำหรับควบคุม PicoAudioCore Firmware ผ่าน USB Serial  
 รองรับการตั้งค่า EQ, Schedule, Signal Generator, Volume และเรียกดูไฟล์บน SD card
@@ -6,6 +6,9 @@
 ---
 
 ## What's New
+
+### v3.1
+- **Quick Controls** — ปุ่ม ▶ ⏸ ⏹ ใน connection bar ด้านบน กด Play/Pause/Stop ได้จากทุก tab ไม่ต้องสลับไปหน้า Player
 
 ### v3.0
 - **MIDI CUE** — เพิ่มแท็บ MIDI CUE ใหม่ เชื่อม MIDI Input (USB keyboard หรือ DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่ง play / stop / goto / next / prev
