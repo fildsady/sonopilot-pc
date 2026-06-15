@@ -932,6 +932,9 @@
             <TabItem Header="ℹ  About">
                 <ScrollViewer Background="#1e1e2e" VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled" Padding="24,20,24,24">
+                    <ScrollViewer.Resources>
+                        <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                    </ScrollViewer.Resources>
                     <StackPanel MaxWidth="640" HorizontalAlignment="Left">
 
                         <!-- Logo / title -->
