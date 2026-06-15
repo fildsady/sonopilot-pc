@@ -474,6 +474,10 @@
         <!-- ── Connection bar (always visible) ──────────────────────────────── -->
         <Border Grid.Row="0" Background="#313244" CornerRadius="6" Padding="12,8" Margin="0,0,0,10">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="140"/>
@@ -484,8 +488,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Port:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#cdd6f4"/>
-                <ComboBox  Grid.Column="1" x:Name="CbPort" Height="28" BorderBrush="#45475a">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Port:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#cdd6f4"/>
+                <ComboBox  Grid.Row="0" Grid.Column="1" x:Name="CbPort" Height="28" BorderBrush="#45475a">
                     <ComboBox.Style>
                         <Style TargetType="ComboBox">
                             <Setter Property="Background" Value="#1e1e2e"/>
@@ -566,11 +570,11 @@
                         </Style>
                     </ComboBox.Style>
                 </ComboBox>
-                <Button    Grid.Column="2" x:Name="BtnRefresh" Content="⟳" Style="{StaticResource DarkBtn}" Margin="6,0" Width="32" Click="BtnRefresh_Click"/>
-                <Button    Grid.Column="3" x:Name="BtnConnect" Content="Connect" Style="{StaticResource AccentBtn}" Width="100" Click="BtnConnect_Click"/>
+                <Button    Grid.Row="0" Grid.Column="2" x:Name="BtnRefresh" Content="⟳" Style="{StaticResource DarkBtn}" Margin="6,0" Width="32" Click="BtnRefresh_Click"/>
+                <Button    Grid.Row="0" Grid.Column="3" x:Name="BtnConnect" Content="Connect" Style="{StaticResource AccentBtn}" Width="100" Click="BtnConnect_Click"/>
 
                 <!-- Autoconnect toggle -->
-                <ToggleButton Grid.Column="4" x:Name="TgAutoConnect" Click="TgAutoConnect_Click"
+                <ToggleButton Grid.Row="0" Grid.Column="4" x:Name="TgAutoConnect" Click="TgAutoConnect_Click"
                               VerticalAlignment="Center" Margin="12,0,0,0" Padding="10,5"
                               ToolTip="Autoconnect — เชื่อมต่อ COM port ล่าสุดอัตโนมัติเมื่อเปิดแอป">
                     <ToggleButton.Style>
@@ -611,7 +615,7 @@
                 </ToggleButton>
 
                 <!-- Startup on boot toggle -->
-                <ToggleButton Grid.Column="5" x:Name="TgStartup" Click="TgStartup_Click"
+                <ToggleButton Grid.Row="0" Grid.Column="5" x:Name="TgStartup" Click="TgStartup_Click"
                               VerticalAlignment="Center" Margin="8,0,0,0" Padding="10,5"
                               ToolTip="เปิดแอปพร้อม Windows อัตโนมัติ (บันทึกใน Registry HKCU Run)">
                     <ToggleButton.Style>
@@ -651,13 +655,18 @@
                     </StackPanel>
                 </ToggleButton>
 
-                <TextBlock Grid.Column="6" x:Name="TbFirmware" Text="" Foreground="#6c7086" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0"/>
-                <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <Button x:Name="BtnSendFile" Content="📤 Send File" Style="{StaticResource DarkBtn}"
-                            Padding="10,5" FontSize="13" IsEnabled="False" Click="BtnSendFile_Click"/>
-                </StackPanel>
-                <Ellipse Grid.Column="7" x:Name="StatusDot" Width="12" Height="12"
+                <Ellipse Grid.Row="0" Grid.Column="7" x:Name="StatusDot" Width="12" Height="12"
                          Fill="#f38ba8" Margin="12,0,0,0" VerticalAlignment="Center"/>
+
+                <!-- Row 1: firmware version + send file -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8"
+                            Orientation="Horizontal" Margin="0,6,0,0">
+                    <TextBlock x:Name="TbFirmware" Text="" Foreground="#6c7086" FontSize="12"
+                               VerticalAlignment="Center"/>
+                    <Button x:Name="BtnSendFile" Content="📤 Send File" Style="{StaticResource DarkBtn}"
+                            Padding="8,4" FontSize="12" IsEnabled="False" Click="BtnSendFile_Click"
+                            Margin="12,0,0,0"/>
+                </StackPanel>
             </Grid>
         </Border>
 
