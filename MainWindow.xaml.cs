@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using IOPath = System.IO.Path;
 
-namespace RP2350Player;
+namespace PicoAudioCore;
 
 public partial class MainWindow : Window
 {

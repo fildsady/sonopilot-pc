@@ -3,7 +3,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RP2350Player
+namespace PicoAudioCore
 {
     public class SerialService : IDisposable
     {
