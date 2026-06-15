@@ -128,19 +128,33 @@ public partial class MainWindow : Window
      */
     async Task ReadLoop(CancellationToken ct) {
         var buf = new byte[BUF_LEN];
-        try {
-            while (!ct.IsCancellationRequested) {
+        /* นับ error ต่อเนื่อง — WinUSB bulk อาจ return error ชั่วคราว
+           ระหว่าง Write กำลังทำงาน ไม่ใช่ device หลุดจริง
+           disconnect ก็ต่อเมื่อ fail ติดกัน MAX_CONSEC_ERR ครั้ง */
+        const int MAX_CONSEC_ERR = 5;
+        int consecErr = 0;
+
+        while (!ct.IsCancellationRequested) {
+            try {
                 int transferred;
                 var err = _reader!.Read(buf, READ_TIMEOUT_MS, out transferred);
 
                 if (ct.IsCancellationRequested) break;
 
-                /* timeout = ปกติ ไม่มีข้อมูลแค่นั้น วนต่อ */
-                if (err == ErrorCode.IoTimedOut) continue;
-
-                if (err != ErrorCode.Ok || transferred < 1) {
-                    throw new Exception($"Read error: {err}");
+                if (err == ErrorCode.IoTimedOut || (err == ErrorCode.Ok && transferred == 0)) {
+                    consecErr = 0;
+                    continue;
                 }
+
+                if (err != ErrorCode.Ok) {
+                    consecErr++;
+                    if (consecErr >= MAX_CONSEC_ERR)
+                        throw new Exception($"Read failed {consecErr}x: {err}");
+                    await Task.Delay(50, ct); /* รอสั้นๆ ก่อน retry */
+                    continue;
+                }
+
+                consecErr = 0; /* รับข้อมูลได้ปกติ reset counter */
 
                 byte cmd = buf[0];
                 string payload = System.Text.Encoding.UTF8
@@ -156,14 +170,19 @@ public partial class MainWindow : Window
                     _           => $"0x{cmd:X2}"
                 };
                 LogRecv($"[{label}] {payload}");
+
+            } catch (OperationCanceledException) {
+                break;
+            } catch (Exception ex) when (_autoReconnect) {
+                Log($"Connection lost ({ex.Message})");
+                Dispatcher.Invoke(() => Disconnect(stopAutoReconnect: false));
+                await ReconnectLoop();
+                return;
+            } catch (Exception ex) {
+                Log($"Read error: {ex.Message}");
+                Dispatcher.Invoke(() => Disconnect());
+                return;
             }
-        } catch (Exception ex) when (_autoReconnect) {
-            Log($"Connection lost ({ex.Message})");
-            Dispatcher.Invoke(() => Disconnect(stopAutoReconnect: false));
-            await ReconnectLoop();
-        } catch (Exception ex) {
-            Log($"Read error: {ex.Message}");
-            Dispatcher.Invoke(() => Disconnect());
         }
     }
 
