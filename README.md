@@ -1,4 +1,4 @@
-# PicoAudioCore — PC GUI v2.1 (Windows)
+# PicoAudioCore — PC GUI v3.0 (Windows)
 
 แอปพลิเคชัน **WPF (.NET 10, Windows)** สำหรับควบคุม PicoAudioCore Firmware ผ่าน USB Serial  
 รองรับการตั้งค่า EQ, Schedule, Signal Generator, Volume และเรียกดูไฟล์บน SD card
@@ -22,6 +22,7 @@
   ปรับความถี่ 1–20000 Hz แบบ live slider, ปรับ Volume (dBFS) ขณะ running
 - **Log console** — แสดง Serial response แบบ real-time
 - **Custom dark title bar** — ออกแบบให้เข้ากับ theme (WindowChrome, ไม่มี Windows chrome)
+- **MIDI CUE** — เชื่อม MIDI Input (USB keyboard หรือ DAW ผ่าน loopMIDI) ให้กดโน้ตแล้วสั่ง play/stop/goto track ได้ทันที
 
 ---
 
@@ -30,6 +31,7 @@
 - Windows 10/11
 - [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (หรือ SDK สำหรับ build)
 - PicoAudioCore firmware v1.7+ เชื่อมต่อผ่าน USB
+- (Optional) [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) — สำหรับรับ MIDI จาก DAW (Cubase, Reaper)
 
 ---
 
@@ -122,7 +124,19 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 - **Save File** — บันทึก schedule เป็น `.json` ลงเครื่อง PC
 - **Load File** — โหลด `.json` กลับมาแสดงใน GUI (แทนที่ schedule ปัจจุบัน)
 
-### 5. แท็บ SigGen — Audio Signal Generator
+### 5. แท็บ MIDI CUE
+
+เชื่อม MIDI Input device (USB keyboard หรือ virtual port จาก DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่งคำสั่ง playback
+
+1. เลือก MIDI device จาก dropdown แล้วคลิก **Open**
+2. คลิก **＋ Add CUE** เพื่อเพิ่มแถวใหม่
+3. ระบุ MIDI note number (0–127) — หน้า GUI แสดงชื่อโน้ต (C3, D#4 ฯลฯ) อัตโนมัติ
+4. เลือก Command: `goto` / `play` / `stop` / `next` / `prev`
+5. ถ้าเลือก `goto` ให้ใส่ชื่อไฟล์ (ไม่ต้องใส่นามสกุล) ในช่อง Track
+
+CUE list บันทึกอัตโนมัติเป็น `midicues.json` ในโฟลเดอร์โปรแกรม
+
+### 6. แท็บ SigGen — Audio Signal Generator
 
 ใช้สร้างสัญญาณเสียงทดสอบออกทาง DAC โดยตรง เหมาะสำหรับทดสอบลำโพง, วัด frequency response หรือ burn-in ระบบเสียง
 

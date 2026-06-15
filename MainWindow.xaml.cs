@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using NAudio.Midi;
 using IOPath = System.IO.Path;
 
 namespace PicoAudioCore;
@@ -16,14 +18,7 @@ public partial class MainWindow : Window
     private readonly SerialService   _serial      = new();
     private readonly DispatcherTimer _clockTimer  = new();
     private readonly DispatcherTimer _beatTimer   = new();
-    private readonly DispatcherTimer _specTimer   = new();
 
-    // Spectrum
-    private const int SpecBands = 32;
-    private readonly System.Windows.Shapes.Rectangle[] _specBars = new System.Windows.Shapes.Rectangle[SpecBands];
-    private readonly double[] _specTarget = new double[SpecBands];
-    private readonly double[] _specCurrent = new double[SpecBands];
-    private bool _specInitDone = false;
     private bool   _connected   = false;
     private bool   _paused      = false;
     private string _repeatMode  = "";
@@ -56,6 +51,24 @@ public partial class MainWindow : Window
         IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.json");
 
     private bool _autoConnect = false;
+
+    // ── MIDI CUE ──────────────────────────────────────────────────────────────
+    private class MidiCueEntry
+    {
+        public int    Note    { get; set; } = 60;
+        public string Command { get; set; } = "goto";
+        public string Track   { get; set; } = "";
+    }
+    private readonly List<MidiCueEntry> _midiCues = new();
+    private MidiIn? _midiIn = null;
+    private static readonly string MidiCueFile =
+        IOPath.Combine(AppDomain.CurrentDomain.BaseDirectory, "midicues.json");
+
+    private static string NoteName(int n)
+    {
+        string[] names = { "C","C#","D","D#","E","F","F#","G","G#","A","A#","B" };
+        return $"{names[n % 12]}{n / 12 - 2}";
+    }
 
     private const string StartupRegKey  = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
     private const string StartupAppName = "PicoAudioCore";
@@ -117,7 +130,9 @@ public partial class MainWindow : Window
         LoadHotkeys();
         BuildEqSliders();
         LoadSchedules();
+        LoadMidiCues();
         RefreshPorts();
+        RefreshMidiPorts();
         Loaded += (_, _) => { if (_autoConnect) TryAutoConnect(); };
 
         _serial.LineReceived += OnLineReceived;
@@ -126,10 +141,6 @@ public partial class MainWindow : Window
             Log("[ERR] Board disconnected");
             SetConnected(false);
         });
-
-        _specTimer.Interval = TimeSpan.FromMilliseconds(40); // ~25 fps smooth decay
-        _specTimer.Tick += SpecTimer_Tick;
-        _specTimer.Start();
 
         _clockTimer.Interval = TimeSpan.FromSeconds(1);
         _clockTimer.Tick += (_, _) =>
@@ -239,98 +250,6 @@ public partial class MainWindow : Window
         // sync with Player tab slider and send to board
         if (SlVolume != null) SlVolume.Value = v;
         if (_connected && _volumeSync) _serial.Send($"volume {v}");
-    }
-
-    // ── Spectrum Analyzer ─────────────────────────────────────────────────────
-
-    private void InitSpecBars()
-    {
-        SpectrumCanvas.Children.Clear();
-        double w = SpectrumCanvas.ActualWidth;
-        double h = SpectrumCanvas.ActualHeight;
-        if (w < 1 || h < 1) return;
-
-        double gap = 2;
-        double barW = (w - gap * (SpecBands - 1)) / SpecBands;
-
-        // Bar colors: gradient low=green, mid=cyan, high=purple (Catppuccin)
-        var colors = new Color[]
-        {
-            Color.FromRgb(0xa6, 0xe3, 0xa1), // green
-            Color.FromRgb(0x94, 0xe2, 0xd5), // teal
-            Color.FromRgb(0x89, 0xdc, 0xeb), // sky
-            Color.FromRgb(0x89, 0xb4, 0xfa), // blue
-            Color.FromRgb(0xcb, 0xa6, 0xf7), // mauve
-        };
-
-        for (int i = 0; i < SpecBands; i++)
-        {
-            float t = (float)i / (SpecBands - 1);
-            float ci = t * (colors.Length - 1);
-            int c0 = (int)ci, c1 = Math.Min(c0 + 1, colors.Length - 1);
-            float f = ci - c0;
-            var col = Color.FromRgb(
-                (byte)(colors[c0].R + f * (colors[c1].R - colors[c0].R)),
-                (byte)(colors[c0].G + f * (colors[c1].G - colors[c0].G)),
-                (byte)(colors[c0].B + f * (colors[c1].B - colors[c0].B)));
-
-            var bar = new System.Windows.Shapes.Rectangle
-            {
-                Width = barW,
-                Height = 0,
-                Fill = new SolidColorBrush(col),
-                RadiusX = 1, RadiusY = 1
-            };
-            Canvas.SetLeft(bar, i * (barW + gap));
-            Canvas.SetBottom(bar, 0);
-            SpectrumCanvas.Children.Add(bar);
-            _specBars[i] = bar;
-        }
-        _specInitDone = true;
-    }
-
-    private void SpectrumCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        InitSpecBars();
-    }
-
-    private void ParseSpectrum(string line)
-    {
-        // "fft 12 45 78 ..."
-        var parts = line.Split(' ');
-        int count = Math.Min(parts.Length - 1, SpecBands);
-        for (int i = 0; i < count; i++)
-            if (int.TryParse(parts[i + 1], out int v))
-                _specTarget[i] = v / 100.0;
-    }
-
-    private void SpecTimer_Tick(object? sender, EventArgs e)
-    {
-        if (!_specInitDone || _specBars[0] == null) return;
-        double h = SpectrumCanvas.ActualHeight;
-        if (h < 1) return;
-
-        const double rise = 0.5;   // fast rise
-        const double fall = 0.12;  // slow fall (visual decay)
-
-        for (int i = 0; i < SpecBands; i++)
-        {
-            double target = _specTarget[i];
-            double cur    = _specCurrent[i];
-            _specCurrent[i] = cur + (target > cur ? rise : fall) * (target - cur);
-            double barH = _specCurrent[i] * h;
-            if (barH < 0) barH = 0;
-            if (barH > h) barH = h;
-            _specBars[i].Height = barH;
-
-            // Fade unlit bars dark
-            if (_specBars[i].Fill is SolidColorBrush br)
-            {
-                byte alpha = (byte)(80 + (int)(_specCurrent[i] * 175));
-                var c = br.Color;
-                _specBars[i].Fill = new SolidColorBrush(Color.FromArgb(alpha, c.R, c.G, c.B));
-            }
-        }
     }
 
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -454,8 +373,7 @@ public partial class MainWindow : Window
     private void SetConnected(bool on)
     {
         _connected = on;
-        if (!on) { _beatTimer.Stop(); TbFirmware.Text = ""; _volumeSync = false; _eqSync = false; _mono = false; UpdateMonoToggleUI(false); Array.Clear(_specTarget, 0, SpecBands); TbSpectrumStatus.Text = "off"; }
-        if (on) { _serial.Send("fft on"); TbSpectrumStatus.Text = "live"; }
+        if (!on) { _beatTimer.Stop(); TbFirmware.Text = ""; _volumeSync = false; _eqSync = false; _mono = false; UpdateMonoToggleUI(false); }
         BtnConnect.Content        = on ? "Disconnect" : "Connect";
         StatusDot.Fill            = on ? Brushes.LightGreen : new SolidColorBrush(Color.FromRgb(0xf3,0x8b,0xa8));
         BtnPrev.IsEnabled         = on;
@@ -641,8 +559,6 @@ public partial class MainWindow : Window
     {
         Dispatcher.Invoke(() =>
         {
-            if (line.StartsWith("fft "))
-            { ParseSpectrum(line); return; }
             if (line.StartsWith("STATUS "))
                 ParseStatus(line);
             else if (line.StartsWith("VERSION "))
@@ -1574,6 +1490,233 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── MIDI CUE ──────────────────────────────────────────────────────────────
+
+    private void RefreshMidiPorts()
+    {
+        CbMidiPort.Items.Clear();
+        for (int i = 0; i < MidiIn.NumberOfDevices; i++)
+            CbMidiPort.Items.Add(MidiIn.DeviceInfo(i).ProductName);
+        if (CbMidiPort.Items.Count > 0) CbMidiPort.SelectedIndex = 0;
+    }
+
+    private void BtnMidiRefresh_Click(object sender, RoutedEventArgs e) => RefreshMidiPorts();
+
+    private void TgMidiEnable_Click(object sender, RoutedEventArgs e)
+    {
+        if (TgMidiEnable.IsChecked == true) OpenMidi();
+        else CloseMidi();
+    }
+
+    private void OpenMidi()
+    {
+        if (CbMidiPort.SelectedIndex < 0)
+        {
+            TbMidiStatus.Text = "ERR: ไม่พบ MIDI port";
+            TgMidiEnable.IsChecked = false;
+            return;
+        }
+        try
+        {
+            _midiIn = new MidiIn(CbMidiPort.SelectedIndex);
+            _midiIn.MessageReceived += OnMidiMessage;
+            _midiIn.ErrorReceived   += (_, e) => Dispatcher.Invoke(() => MidiLog($"[ERR] MIDI error"));
+            _midiIn.Start();
+            TbMidiStatus.Foreground = new SolidColorBrush(Color.FromRgb(0xa6, 0xe3, 0xa1));
+            TbMidiStatus.Text = $"● {CbMidiPort.SelectedItem}";
+        }
+        catch (Exception ex)
+        {
+            TbMidiStatus.Foreground = new SolidColorBrush(Color.FromRgb(0xf3, 0x8b, 0xa8));
+            TbMidiStatus.Text = $"ERR: {ex.Message}";
+            TgMidiEnable.IsChecked = false;
+        }
+    }
+
+    private void CloseMidi()
+    {
+        _midiIn?.Stop();
+        _midiIn?.Dispose();
+        _midiIn = null;
+        if (TbMidiStatus != null)
+        {
+            TbMidiStatus.Foreground = new SolidColorBrush(Color.FromRgb(0x45, 0x47, 0x5a));
+            TbMidiStatus.Text = "—";
+        }
+    }
+
+    private void OnMidiMessage(object? sender, MidiInMessageEventArgs e)
+    {
+        if (e.MidiEvent is NoteOnEvent noteOn && noteOn.Velocity > 0)
+        {
+            int note = noteOn.NoteNumber;
+            var cue  = _midiCues.FirstOrDefault(c => c.Note == note);
+            Dispatcher.Invoke(() =>
+            {
+                if (cue != null)
+                {
+                    ExecuteMidiCue(cue);
+                    MidiLog($"Note {note,3} ({NoteName(note),-3})  vel={noteOn.Velocity,-3}  →  {cue.Command}{(cue.Command == "goto" ? " " + cue.Track : "")}");
+                }
+                else
+                {
+                    MidiLog($"Note {note,3} ({NoteName(note),-3})  vel={noteOn.Velocity,-3}  (no CUE)");
+                }
+            });
+        }
+    }
+
+    private void ExecuteMidiCue(MidiCueEntry cue)
+    {
+        if (!_connected) return;
+        switch (cue.Command)
+        {
+            case "goto": if (!string.IsNullOrEmpty(cue.Track)) _serial.Send($"goto {cue.Track}"); break;
+            case "play": _serial.Send("play"); break;
+            case "stop": _serial.Send("stop"); break;
+            case "next": _serial.Send("next"); break;
+            case "prev": _serial.Send("prev"); break;
+        }
+    }
+
+    private void MidiLog(string text)
+    {
+        TbMidiLog.Text += text + "\n";
+        TbMidiLog.ScrollToEnd();
+    }
+
+    private void BtnMidiLogClear_Click(object sender, RoutedEventArgs e) => TbMidiLog.Text = "";
+
+    private void BtnAddMidiCue_Click(object sender, RoutedEventArgs e)
+    {
+        _midiCues.Add(new MidiCueEntry { Note = 60 + _midiCues.Count });
+        SaveMidiCues();
+        RebuildMidiCuePanel();
+    }
+
+    private void RebuildMidiCuePanel()
+    {
+        MidiCuePanel.Children.Clear();
+        for (int i = 0; i < _midiCues.Count; i++)
+            MidiCuePanel.Children.Add(BuildMidiCueRow(i));
+    }
+
+    private UIElement BuildMidiCueRow(int idx)
+    {
+        var entry = _midiCues[idx];
+        var row   = new Grid { Margin = new Thickness(0, 0, 0, 4) };
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(44) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(96) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
+
+        // Note # textbox
+        var tbNote = new TextBox
+        {
+            Text = entry.Note.ToString(),
+            Background = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
+            Foreground = new SolidColorBrush(Color.FromRgb(0xf9, 0xc7, 0x4f)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
+            BorderThickness = new Thickness(1), FontFamily = new FontFamily("Consolas"),
+            FontSize = 13, Padding = new Thickness(4, 2, 4, 2),
+            TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
+            ToolTip = "MIDI note number 0–127  (C3=60)"
+        };
+
+        // Note name label (auto-updated)
+        var tbName = new TextBlock
+        {
+            Text = NoteName(entry.Note),
+            Foreground = new SolidColorBrush(Color.FromRgb(0x89, 0xb4, 0xfa)),
+            FontFamily = new FontFamily("Consolas"), FontSize = 13,
+            VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0)
+        };
+
+        tbNote.TextChanged += (_, _) =>
+        {
+            if (int.TryParse(tbNote.Text, out int n) && n >= 0 && n <= 127)
+            {
+                entry.Note = n;
+                tbName.Text = NoteName(n);
+                SaveMidiCues();
+            }
+        };
+        Grid.SetColumn(tbNote, 0);
+        Grid.SetColumn(tbName, 1);
+
+        // Command combobox
+        var cbCmd = new ComboBox
+        {
+            Height = 26, Margin = new Thickness(4, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            FontFamily = new FontFamily("Consolas"), FontSize = 13,
+            Style = (Style)FindResource("DarkComboBox")
+        };
+        foreach (var cmd in new[] { "goto", "play", "stop", "next", "prev" })
+            cbCmd.Items.Add(cmd);
+        cbCmd.SelectedItem = entry.Command;
+        cbCmd.SelectionChanged += (_, _) =>
+        {
+            if (cbCmd.SelectedItem is string s) { entry.Command = s; SaveMidiCues(); }
+        };
+        Grid.SetColumn(cbCmd, 2);
+
+        // Track textbox
+        var tbTrack = new TextBox
+        {
+            Text = entry.Track,
+            Background = new SolidColorBrush(Color.FromRgb(0x08, 0x08, 0x14)),
+            Foreground = new SolidColorBrush(Color.FromRgb(0xb0, 0xc8, 0xff)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
+            BorderThickness = new Thickness(1), FontFamily = new FontFamily("Consolas"),
+            FontSize = 13, Padding = new Thickness(4, 2, 4, 2),
+            Margin = new Thickness(6, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center,
+            ToolTip = "ชื่อไฟล์ไม่ต้องใส่นามสกุล — ใช้เมื่อ Command = goto"
+        };
+        tbTrack.TextChanged += (_, _) => { entry.Track = tbTrack.Text.Trim(); SaveMidiCues(); };
+        Grid.SetColumn(tbTrack, 3);
+
+        // Delete button
+        var btnDel = new Button
+        {
+            Content = "✕", FontSize = 11, Width = 26, Height = 26,
+            Background = new SolidColorBrush(Color.FromRgb(0x18, 0x18, 0x2a)),
+            Foreground = new SolidColorBrush(Color.FromRgb(0xcc, 0x5a, 0x5a)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x28, 0x42)),
+            BorderThickness = new Thickness(1), Cursor = Cursors.Hand,
+            Margin = new Thickness(4, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center
+        };
+        btnDel.Click += (_, _) => { _midiCues.RemoveAt(idx); SaveMidiCues(); RebuildMidiCuePanel(); };
+        Grid.SetColumn(btnDel, 4);
+
+        row.Children.Add(tbNote);
+        row.Children.Add(tbName);
+        row.Children.Add(cbCmd);
+        row.Children.Add(tbTrack);
+        row.Children.Add(btnDel);
+        return row;
+    }
+
+    private void SaveMidiCues()
+    {
+        try { File.WriteAllText(MidiCueFile, JsonSerializer.Serialize(_midiCues, new JsonSerializerOptions { WriteIndented = true })); }
+        catch { }
+    }
+
+    private void LoadMidiCues()
+    {
+        try
+        {
+            if (!File.Exists(MidiCueFile)) return;
+            var list = JsonSerializer.Deserialize<List<MidiCueEntry>>(File.ReadAllText(MidiCueFile));
+            if (list == null) return;
+            _midiCues.AddRange(list);
+            RebuildMidiCuePanel();
+        }
+        catch { }
+    }
+
     // ── Window state ──────────────────────────────────────────────────────────
 
     private void RestoreWindowState()
@@ -1611,7 +1754,7 @@ public partial class MainWindow : Window
         SaveWindowState();
         _clockTimer.Stop();
         _beatTimer.Stop();
-        _specTimer.Stop();
+        CloseMidi();
         _serial.Dispose();
         base.OnClosed(e);
     }

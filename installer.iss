@@ -1,5 +1,5 @@
 #define AppName      "PicoAudioCore"
-#define AppVersion   "2.1"
+#define AppVersion   "3.0"
 #define AppPublisher "fildsady"
 #define AppExeName   "PicoAudioCore.exe"
 #define SourceDir    "publish"
