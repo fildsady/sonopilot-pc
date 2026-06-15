@@ -138,6 +138,48 @@ public partial class MainWindow : Window
 
     private void BtnRefresh_Click(object sender, RoutedEventArgs e) => RefreshPorts();
 
+    // ── Signal Generator ──────────────────────────────────────────────────────
+
+    private string GetSelectedWaveform()
+    {
+        foreach (var rb in new[] { RbSine, RbSquare, RbTriangle, RbSaw, RbWhite, RbPink })
+            if (rb.IsChecked == true) return (string)rb.Tag;
+        return "sine";
+    }
+
+    private void BtnSigStart_Click(object sender, RoutedEventArgs e)
+    {
+        string wave = GetSelectedWaveform();
+        string cmd;
+        if (wave == "white" || wave == "pink")
+            cmd = $"siggen {wave}";
+        else
+        {
+            if (!float.TryParse(TbSigFreq.Text, out float freq) || freq < 1 || freq > 20000)
+            {
+                Log("[SIGGEN] ความถี่ต้องเป็น 1–20000 Hz");
+                return;
+            }
+            cmd = $"siggen {wave} {(int)freq}";
+        }
+        _serial.Send(cmd);
+        TbSigStatus.Text = $"Running:  {wave}  {(wave is "white" or "pink" ? "" : TbSigFreq.Text + " Hz")}".TrimEnd();
+        SigGenStatusBar.Visibility = Visibility.Visible;
+        Log($"[SIGGEN] {cmd}");
+    }
+
+    private void BtnSigStop_Click(object sender, RoutedEventArgs e)
+    {
+        _serial.Send("siggen off");
+        SigGenStatusBar.Visibility = Visibility.Collapsed;
+        Log("[SIGGEN] off");
+    }
+
+    private void BtnSigFreqPreset_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn) TbSigFreq.Text = (string)btn.Tag;
+    }
+
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
     {
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
@@ -279,6 +321,8 @@ public partial class MainWindow : Window
         foreach (var s in _eqSliders) if (s != null) s.IsEnabled = on;
         MonoToggleBorder.IsEnabled = on;
         BtnSendFile.IsEnabled      = on && !_uploading;
+        BtnSigStart.IsEnabled      = on;
+        BtnSigStop.IsEnabled       = on;
         UpdateSchedModeUI();
         if (!on)
         {

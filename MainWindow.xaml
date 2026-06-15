@@ -954,7 +954,124 @@
             </TabItem>
 
             <!-- ════════════════════════════════════════════════════════════════
-                 PAGE 3 — Help
+                 PAGE 3 — Signal Generator
+                 ════════════════════════════════════════════════════════════════ -->
+            <TabItem Header="〜  SigGen">
+                <Grid Background="#1e1e2e" Margin="0,8,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Waveform selector -->
+                    <Border Grid.Row="0" Background="#313244" CornerRadius="6" Padding="16,12" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Waveform" Foreground="#6c7086" FontSize="11" Margin="0,0,0,8"/>
+                            <WrapPanel x:Name="WaveformPanel">
+                                <RadioButton x:Name="RbSine"     Content="Sine"     GroupName="Waveform" Tag="sine"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13" IsChecked="True"/>
+                                <RadioButton x:Name="RbSquare"   Content="Square"   GroupName="Waveform" Tag="square"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13"/>
+                                <RadioButton x:Name="RbTriangle" Content="Triangle" GroupName="Waveform" Tag="triangle"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13"/>
+                                <RadioButton x:Name="RbSaw"      Content="Sawtooth" GroupName="Waveform" Tag="saw"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13"/>
+                                <RadioButton x:Name="RbWhite"    Content="White Noise" GroupName="Waveform" Tag="white"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13"/>
+                                <RadioButton x:Name="RbPink"     Content="Pink Noise"  GroupName="Waveform" Tag="pink"
+                                             Margin="0,0,12,6" Foreground="#cdd6f4" FontSize="13"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Frequency + control -->
+                    <Border Grid.Row="1" Background="#313244" CornerRadius="6" Padding="16,12" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Frequency (Hz)" Foreground="#6c7086" FontSize="13"
+                                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBox Grid.Column="1" x:Name="TbSigFreq" Text="1000"
+                                     Height="30" Background="#1e1e2e" Foreground="#cdd6f4"
+                                     BorderBrush="#45475a" BorderThickness="1"
+                                     Padding="8,4" FontSize="13" VerticalContentAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="Hz" Foreground="#6c7086" FontSize="13"
+                                       VerticalAlignment="Center" Margin="8,0,0,0"/>
+
+                            <!-- Freq presets -->
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
+                                <Button Content="50" Tag="50"   Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="100" Tag="100" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="440" Tag="440" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="1k"  Tag="1000" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="5k"  Tag="5000" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="10k" Tag="10000" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,4,0" Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                                <Button Content="20k" Tag="20000" Style="{StaticResource DarkBtn}" Padding="8,4" Margin="0,0,0,0"  Click="BtnSigFreqPreset_Click" FontSize="12"/>
+                            </StackPanel>
+
+                            <!-- Start / Stop -->
+                            <Button Grid.Column="4" x:Name="BtnSigStart" Content="▶  Start"
+                                    Style="{StaticResource AccentBtn}" Width="110" Margin="16,0,8,0"
+                                    IsEnabled="False" Click="BtnSigStart_Click"/>
+                            <Button Grid.Column="5" x:Name="BtnSigStop" Content="■  Stop"
+                                    Style="{StaticResource DarkBtn}" Width="90"
+                                    IsEnabled="False" Click="BtnSigStop_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Status -->
+                    <Border Grid.Row="2" x:Name="SigGenStatusBar" Background="#1e3a2f" CornerRadius="6"
+                            Padding="16,10" Margin="0,0,0,10" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Fill="#a6e3a1" VerticalAlignment="Center" Margin="0,0,8,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Style.Triggers>
+                                            <EventTrigger RoutedEvent="Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         From="1" To="0.2" Duration="0:0:0.8"
+                                                                         AutoReverse="True"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock x:Name="TbSigStatus" Text="Running: sine  1000 Hz"
+                                       Foreground="#a6e3a1" FontSize="13" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Info -->
+                    <Border Grid.Row="3" Background="#181825" CornerRadius="6" Padding="16,14">
+                        <StackPanel>
+                            <TextBlock Text="หมายเหตุ" Foreground="#6c7086" FontSize="12" Margin="0,0,0,8"/>
+                            <TextBlock TextWrapping="Wrap" Foreground="#45475a" FontSize="12" LineHeight="22">
+                                • <Run Foreground="#89b4fa">Sine / Square / Triangle / Sawtooth</Run> — ใส่ความถี่ 1–20000 Hz&#x0a;
+                                • <Run Foreground="#89b4fa">White Noise</Run> — broadband, ความถี่ไม่มีผล&#x0a;
+                                • <Run Foreground="#89b4fa">Pink Noise</Run> — 1/f spectrum (เหมือนเสียงธรรมชาติ), ความถี่ไม่มีผล&#x0a;
+                                • Signal Generator หยุด playback ปกติชั่วคราว — กด Stop แล้วกด Play เพื่อเล่นเพลงต่อ&#x0a;
+                                • EQ และ Volume ยังคงทำงานขณะ SigGen ทำงาน
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ════════════════════════════════════════════════════════════════
+                 PAGE 4 — Help
                  ════════════════════════════════════════════════════════════════ -->
             <TabItem Header="❓  Help">
                 <ScrollViewer Background="#1e1e2e" VerticalScrollBarVisibility="Auto"
