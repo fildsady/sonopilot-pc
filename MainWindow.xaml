@@ -1031,8 +1031,24 @@
 
                         <Separator Background="#383858" Margin="0,0,0,20"/>
 
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
+                        <!-- Author -->
+                        <TextBlock Text="ผู้พัฒนา" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#89b4fa" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <TextBlock Text="Anon Saisinuan" Foreground="#cdd6f4" FontSize="13" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBlock FontSize="13" Margin="0,0,0,20">
+                            <Hyperlink NavigateUri="mailto:anonx.filder@gmail.com"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Foreground="#89dceb">anonx.filder@gmail.com</Hyperlink>
+                        </TextBlock>
+
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
                         <!-- License -->
-                        <TextBlock Text="License  —  MIT" FontSize="13"                                   Foreground="#585b70" Margin="0,0,0,4"/>
+                        <TextBlock Text="License  —  MIT" FontSize="13" Foreground="#585b70" Margin="0,0,0,4"/>
                         <TextBlock TextWrapping="Wrap" FontSize="13"
                                    Foreground="#45475a" LineHeight="20">
                             Permission is hereby granted, free of charge, to any person obtaining a copy of this software
