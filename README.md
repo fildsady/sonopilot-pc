@@ -1,6 +1,6 @@
-# PicoAudioCore — PC GUI (Windows)
+# PicoAudioCore — PC GUI v2.1 (Windows)
 
-แอปพลิเคชัน **WPF (.NET 10, Windows)** สำหรับควบคุม RP2350 MP3 Player ผ่าน USB Serial  
+แอปพลิเคชัน **WPF (.NET 10, Windows)** สำหรับควบคุม PicoAudioCore Firmware ผ่าน USB Serial  
 รองรับการตั้งค่า EQ, Schedule, Volume และเรียกดูไฟล์บน SD card
 
 ---
@@ -13,6 +13,7 @@
 - **Volume** — slider 0–100 sync กับ Pico
 - **Mono toggle**
 - **Schedule Editor** — ตั้งเวลาเล่นอัตโนมัติ, หลาย track ต่อ entry, กำหนดวัน
+- **สองโหมด Schedule** — Pico Scheduler (เก็บใน SD) หรือ GUI Scheduler (PC สั่งเล่น)
 - **Pull Schedule จาก Pico** — ดึง schedule ที่บันทึกอยู่ใน SD กลับมาแสดงใน GUI
 - **Save / Load Schedule** — บันทึกเป็น JSON ลงเครื่อง PC
 - **Log console** — แสดง Serial response แบบ real-time
@@ -23,15 +24,15 @@
 
 - Windows 10/11
 - [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (หรือ SDK สำหรับ build)
-- RP2350 Player firmware v1.5+ เชื่อมต่อผ่าน USB
+- PicoAudioCore firmware v1.7+ เชื่อมต่อผ่าน USB
 
 ---
 
 ## Build
 
 ```powershell
-git clone <this-repo>
-cd RP2350Player
+git clone https://github.com/fildsady/sonopilot-pc
+cd sonopilot-pc
 dotnet build
 ```
 
@@ -48,7 +49,7 @@ dotnet run
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
-ไฟล์ exe จะอยู่ที่ `bin/Release/net10.0-windows/win-x64/publish/`
+ไฟล์ exe จะอยู่ที่ `publish/`
 
 ---
 
@@ -80,6 +81,13 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 - **Reset** — คืน EQ ทุก band เป็น flat (0 dB)
 
 ### 4. แท็บ Schedule
+
+#### โหมด Schedule
+
+| โหมด | การทำงาน |
+|------|---------|
+| 🤖 Pico Scheduler | ส่ง schedule ไปเก็บใน SD card, Pico ดูเวลาเองและสั่งเล่น |
+| 🖥️ GUI Scheduler | PC ดูเวลาและส่ง goto command เอง (Pico scheduler หยุดชั่วคราว ไม่ถูกลบ) |
 
 #### เพิ่ม Entry
 
@@ -144,7 +152,7 @@ eq band <0-31> <value>
 eq reset
 mono on|off
 sched list
-sched clear
+sched clear / sched pause / sched resume
 sched add time=HH:MM [stop=HH:MM] tracks=name1,name2 [loops=N] [days=1111111] [enabled=1]
 sched save
 date YYYY-MM-DD HH:MM:SS
@@ -155,7 +163,7 @@ date YYYY-MM-DD HH:MM:SS
 ## โครงสร้างไฟล์
 
 ```
-RP2350Player/
+sonopilot-pc/
 ├── MainWindow.xaml          UI layout (WPF)
 ├── MainWindow.xaml.cs       Code-behind (logic)
 ├── SerialService.cs         USB Serial abstraction

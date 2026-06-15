@@ -8,13 +8,13 @@
 AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
 AppName={#AppName}
 AppVersion={#AppVersion}
-AppPublisherURL=https://github.com/fildsady/rp2350-player-pc
-AppSupportURL=https://github.com/fildsady/rp2350-player-pc/issues
+AppPublisherURL=https://github.com/fildsady/sonopilot-pc
+AppSupportURL=https://github.com/fildsady/sonopilot-pc/issues
 AppPublisher={#AppPublisher}
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 OutputDir=installer_output
-OutputBaseFilename=RP2350Player-Setup-v{#AppVersion}
+OutputBaseFilename=PicoAudioCore-Setup-v{#AppVersion}
 SetupIconFile=app.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
