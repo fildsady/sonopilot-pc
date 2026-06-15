@@ -926,6 +926,121 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- ════════════════════════════════════════════════════════════════
+                 PAGE 4 — About
+                 ════════════════════════════════════════════════════════════════ -->
+            <TabItem Header="ℹ  About">
+                <ScrollViewer Background="#1e1e2e" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled" Padding="24,20,24,24">
+                    <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+
+                        <!-- Logo / title -->
+                        <TextBlock Text="PicoAudioCore" FontSize="28" FontWeight="Bold"
+                                   Foreground="#cba6f7" FontFamily="Consolas" Margin="0,0,0,4"/>
+                        <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#6c7086" Margin="0,0,0,20">
+                            <Run Text="PC GUI  v2.1   ·   Firmware v1.7   ·   © 2025 fildsady"/>
+                        </TextBlock>
+
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
+                        <!-- Description -->
+                        <TextBlock Text="เกี่ยวกับโปรเจค" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#89b4fa" Margin="0,0,0,8" FontFamily="Segoe UI"/>
+                        <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="13"
+                                   Foreground="#cdd6f4" LineHeight="22" Margin="0,0,0,20">
+                            PicoAudioCore คือระบบเล่นเสียงดิจิทัล In-house สร้างบน Raspberry Pi Pico 2 (RP2350)
+                            รองรับ MP3 / WAV / FLAC ออกเสียงผ่าน MCP4922 12-bit DAC แยกชิป
+                            พร้อม 32-band EQ, Scheduler อัตโนมัติ และควบคุมผ่าน PC GUI นี้
+                        </TextBlock>
+
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
+                        <!-- Tech stack -->
+                        <TextBlock Text="Tech Stack" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#89b4fa" Margin="0,0,0,10" FontFamily="Segoe UI"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="MCU" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Raspberry Pi Pico 2  (RP2350, Cortex-M33 240 MHz)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="DAC" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="MCP4922  12-bit  Dual  (PIO SPI)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="RTOS" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="FreeRTOS SMP  (2 cores)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="DSP / EQ" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CMSIS-DSP  ·  32-band Peaking Biquad  ±12 dB" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Formats" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="MP3 (minimp3)  ·  WAV 8/16-bit  ·  FLAC ≤48 kHz (dr_flac)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Storage" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="SD card  FatFS  SPI  ·  สูงสุด 500 tracks" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="WPF  .NET 10  C#  (Windows)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Scheduler" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="Powman AON Timer RTC  ·  16 entries  ·  Dual-mode" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                        </Grid>
+
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
+                        <!-- Version info -->
+                        <TextBlock Text="เวอร์ชัน" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#89b4fa" Margin="0,0,0,10" FontFamily="Segoe UI"/>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="v2.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Firmware" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="v1.7" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" FontFamily="Consolas" FontSize="12" Margin="0,3">
+                                <Hyperlink NavigateUri="https://github.com/fildsady/sonopilot-pc"
+                                           RequestNavigate="Hyperlink_RequestNavigate"
+                                           Foreground="#89dceb">github.com/fildsady/sonopilot-pc</Hyperlink>
+                            </TextBlock>
+                        </Grid>
+
+                        <Separator Background="#383858" Margin="0,0,0,20"/>
+
+                        <!-- License -->
+                        <TextBlock Text="License  —  MIT" FontSize="12" FontFamily="Consolas"
+                                   Foreground="#585b70" Margin="0,0,0,4"/>
+                        <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
+                                   Foreground="#45475a" LineHeight="20">
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+                            to use, copy, modify, merge, publish, and distribute subject to the MIT License conditions.
+                        </TextBlock>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
         </TabControl>
 
         <!-- Hotkey panel -->
