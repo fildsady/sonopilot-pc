@@ -1,5 +1,5 @@
 #define AppName      "RP2350 Player"
-#define AppVersion   "1.7"
+#define AppVersion   "2.1"
 #define AppPublisher "fildsady"
 #define AppExeName   "RP2350Player.exe"
 #define SourceDir    "publish"
