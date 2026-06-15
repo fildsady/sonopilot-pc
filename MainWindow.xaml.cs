@@ -647,15 +647,22 @@ public partial class MainWindow : Window
 
         if (_schedMode == SchedMode.GuiScheduler && _connected)
         {
-            /* clear Pico schedule so it doesn't conflict */
-            Log("[SCHED] Switching to GUI Scheduler — clearing Pico schedule…");
-            bool ok = await SendAndWaitOk("sched clear", 3000);
-            if (ok) await SendAndWaitOk("sched save", 3000);
-            Log(ok ? "[SCHED] Pico schedule cleared ✓" : "[SCHED] WARN: could not clear Pico schedule");
+            /* suspend Pico scheduler — entries stay intact, just paused */
+            Log("[SCHED] Switching to GUI Scheduler — pausing Pico scheduler…");
+            bool ok = await SendAndWaitOk("sched pause", 3000);
+            Log(ok ? "[SCHED] Pico scheduler paused ✓" : "[SCHED] WARN: could not pause Pico scheduler");
             TbSchedStatus.Text = "GUI Scheduler — idle";
-            /* reset GUI state */
             _guiLoopsRemain = 0; _guiActiveTrack = ""; _guiActiveEntry = null;
             _lastSchedMinute = "";
+        }
+        else if (_schedMode == SchedMode.PicoScheduler && _connected)
+        {
+            /* resume Pico scheduler */
+            Log("[SCHED] Switching to Pico Scheduler — resuming…");
+            bool ok = await SendAndWaitOk("sched resume", 3000);
+            Log(ok ? "[SCHED] Pico scheduler resumed ✓" : "[SCHED] WARN: could not resume Pico scheduler");
+            TbSchedStatus.Text = "";
+            _guiLoopsRemain = 0;
         }
         else if (_schedMode == SchedMode.PicoScheduler)
         {

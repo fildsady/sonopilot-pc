@@ -702,7 +702,7 @@
                                     </RadioButton.Content>
                                 </RadioButton>
                                 <TextBlock Foreground="#585b70" FontSize="11" VerticalAlignment="Center" Margin="20,0,0,0"
-                                           Text="Pico = เก็บ schedule ใน SD card  |  GUI = PC สั่งเล่นตามเวลา (Pico schedule จะถูกล้าง)"/>
+                                           Text="Pico = Pico ดูเวลาเอง  |  GUI = PC สั่งเล่นตามเวลา (Pico scheduler หยุดชั่วคราว — entries ยังอยู่)"/>
                             </StackPanel>
                         </Border>
 
