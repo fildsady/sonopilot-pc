@@ -1,7 +1,7 @@
 #define AppName      "PicoAudioCore"
 #define AppVersion   "2.1"
 #define AppPublisher "fildsady"
-#define AppExeName   "RP2350Player.exe"
+#define AppExeName   "PicoAudioCore.exe"
 #define SourceDir    "publish"
 
 [Setup]
