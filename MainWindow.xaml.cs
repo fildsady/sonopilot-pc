@@ -25,6 +25,7 @@ public partial class MainWindow : Window
     HidStream?  _stream;
     CancellationTokenSource? _cts;
     bool _connected;
+    bool _autoReconnect;
 
     public MainWindow() { InitializeComponent(); Log("PicoAudioCore HID Console ready."); }
 
@@ -46,16 +47,23 @@ public partial class MainWindow : Window
     }
 
     void Connect() {
+        _autoReconnect = ChkAutoReconnect.IsChecked == true;
+        if (!TryConnect())
+            Log("Device not found — plug in Pico and try again.");
+    }
+
+    bool TryConnect() {
         var list = DeviceList.Local;
         _device  = list.GetHidDeviceOrNull(VID, PID);
-        if (_device == null) { Log("Device not found — plug in Pico and try again."); return; }
+        if (_device == null) return false;
 
         try {
             _stream = _device.Open();
             _stream.ReadTimeout  = Timeout.Infinite;
             _stream.WriteTimeout = 2000;
-        } catch (Exception ex) {
-            Log($"Open failed: {ex.Message}"); return;
+        } catch {
+            _stream = null;
+            return false;
         }
 
         _connected = true;
@@ -63,15 +71,26 @@ public partial class MainWindow : Window
         SetUiConnected(true);
         Log($"Connected → {_device.GetProductName()}");
         Task.Run(() => ReadLoop(_cts.Token));
+        return true;
     }
 
-    void Disconnect() {
+    void Disconnect(bool stopAutoReconnect = true) {
+        if (stopAutoReconnect) _autoReconnect = false;
         _cts?.Cancel();
         _stream?.Close();
         _stream = null;
         _connected = false;
         SetUiConnected(false);
-        Log("Disconnected.");
+        if (stopAutoReconnect) Log("Disconnected.");
+    }
+
+    async Task ReconnectLoop() {
+        Log("Device lost — retrying every 2s…");
+        while (_autoReconnect) {
+            await Task.Delay(2000);
+            if (!_autoReconnect) break;
+            if (TryConnect()) { Log("Reconnected."); return; }
+        }
     }
 
     void SetUiConnected(bool on) => Dispatcher.Invoke(() => {
@@ -108,9 +127,13 @@ public partial class MainWindow : Window
                 LogRecv($"[{label}] {payload}");
             }
         } catch (OperationCanceledException) {
+        } catch (Exception ex) when (_autoReconnect) {
+            Log($"Connection lost ({ex.Message})");
+            Dispatcher.Invoke(() => Disconnect(stopAutoReconnect: false));
+            await ReconnectLoop();
         } catch (Exception ex) {
             Log($"Read error: {ex.Message}");
-            Dispatcher.Invoke(Disconnect);
+            Dispatcher.Invoke(() => Disconnect());
         }
     }
 

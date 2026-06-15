@@ -31,6 +31,9 @@
                 <Button x:Name="BtnConnect" Content="Connect" Click="BtnConnect_Click"
                         Background="#313244" Foreground="#a6e3a1" BorderBrush="#a6e3a1"
                         BorderThickness="1" Padding="14,5" Cursor="Hand"/>
+                <CheckBox x:Name="ChkAutoReconnect" Content="Auto-reconnect"
+                          Foreground="#6c7086" VerticalAlignment="Center"
+                          Margin="16,0,0,0" IsChecked="True"/>
             </StackPanel>
         </Border>
 
