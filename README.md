@@ -5,6 +5,26 @@
 
 ---
 
+## What's New
+
+### v3.0
+- **MIDI CUE** — เพิ่มแท็บ MIDI CUE ใหม่ เชื่อม MIDI Input (USB keyboard หรือ DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่ง play / stop / goto / next / prev
+- **USB MIDI Keyboard** — รองรับ USB MIDI keyboard ที่ต่อตรงกับ PC โดยไม่ต้องติดตั้ง driver เพิ่ม
+- **Dark UI Consistency** — ปรับ dropdown ทุกตัวที่สร้างใน code ให้ใช้ Catppuccin dark theme เหมือนกันหมด ไม่มี Windows default สีขาวรั่วออกมา
+
+### v2.1
+- Signal Generator (Sine / Square / Triangle / Sawtooth / White Noise / Pink Noise)
+- Live frequency control ขณะ running ผ่าน `sigfreq` command
+- Volume (dBFS) sync กับ Player tab
+
+### v2.0
+- 32-band Graphic EQ, ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ
+- Schedule Editor: Pico Scheduler และ GUI Scheduler, multi-track, Stop Time, Day selector
+- Pull Schedule จาก Pico, Save/Load JSON
+- Autoconnect, Run on Startup
+
+---
+
 ## คุณสมบัติ
 
 - **เชื่อมต่อ USB Serial** — เลือก COM port, Connect/Disconnect

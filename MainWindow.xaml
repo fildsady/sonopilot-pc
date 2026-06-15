@@ -1727,6 +1727,45 @@
 
                         <Separator Background="#383858" Margin="0,0,0,20"/>
 
+                        <!-- What's New -->
+                        <TextBlock Text="What's New" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#89b4fa" Margin="0,0,0,10"/>
+
+                        <!-- v3.0 -->
+                        <Border Background="#181825" CornerRadius="6" Padding="12,10" Margin="0,0,0,6">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <TextBlock Text="v3.0" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,10,0"/>
+                                    <TextBlock Text="ปัจจุบัน" Foreground="#6c7086" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" LineHeight="20" TextWrapping="Wrap">
+                                    <Run Foreground="#f38ba8">★</Run><Run> MIDI CUE — เชื่อม MIDI keyboard / DAW ให้สั่ง play·stop·goto ได้&#10;</Run>
+                                    <Run Foreground="#f38ba8">★</Run><Run> รองรับ USB MIDI Keyboard โดยตรง ไม่ต้องติดตั้ง driver&#10;</Run>
+                                    <Run Foreground="#f38ba8">★</Run><Run> Dark UI Consistency — dropdown ทุกตัวใช้ Catppuccin theme เหมือนกันหมด</Run>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- v2.1 -->
+                        <Border Background="#181825" CornerRadius="6" Padding="12,10" Margin="0,0,0,6">
+                            <StackPanel>
+                                <TextBlock Text="v2.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#585b70" LineHeight="20" TextWrapping="Wrap">
+                                    Signal Generator (Sine/Square/Triangle/Sawtooth/White/Pink Noise)&#10;Live frequency control, Volume (dBFS) sync
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- v2.0 -->
+                        <Border Background="#181825" CornerRadius="6" Padding="12,10" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="v2.0" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#585b70" LineHeight="20" TextWrapping="Wrap">
+                                    32-band EQ, Schedule Editor (Pico + GUI mode), Autoconnect, Run on Startup
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
                         <Separator Background="#383858" Margin="0,0,0,20"/>
 
                         <!-- Author -->
