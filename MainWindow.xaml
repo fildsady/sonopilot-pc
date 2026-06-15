@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PicoAudioCore  v2.1" Icon="/PicoAudioCore;component/app.ico" Height="590" Width="896"
         Background="#1e1e2e" Foreground="White"
+        FontFamily="Cascadia Code, Cascadia Mono, Consolas"
+        FontSize="13"
         ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
@@ -402,7 +404,7 @@
                                                     </Style>
                                                 </ToggleButton.Style>
                                             </ToggleButton>
-                                            <TextBlock Text="▾" Foreground="White" FontSize="10"
+                                            <TextBlock Text="▾" Foreground="White" FontSize="13"
                                                        HorizontalAlignment="Right" VerticalAlignment="Center"
                                                        Margin="0,0,8,0" IsHitTestVisible="False"/>
                                             <Popup x:Name="Popup" Placement="Bottom"
@@ -449,11 +451,10 @@
                 </ComboBox>
                 <Button    Grid.Column="2" x:Name="BtnRefresh" Content="⟳" Style="{StaticResource DarkBtn}" Margin="6,0" Width="32" Click="BtnRefresh_Click"/>
                 <Button    Grid.Column="3" x:Name="BtnConnect" Content="Connect" Style="{StaticResource AccentBtn}" Width="100" Click="BtnConnect_Click"/>
-                <TextBlock Grid.Column="4" x:Name="TbFirmware" Text="" Foreground="#6c7086" FontSize="11" FontFamily="Consolas"
-                           HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0"/>
+                <TextBlock Grid.Column="4" x:Name="TbFirmware" Text="" Foreground="#6c7086" FontSize="13"                           HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0"/>
                 <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Button x:Name="BtnSendFile" Content="📤 Send File" Style="{StaticResource DarkBtn}"
-                            Padding="10,5" FontSize="12" IsEnabled="False" Click="BtnSendFile_Click"/>
+                            Padding="10,5" FontSize="13" IsEnabled="False" Click="BtnSendFile_Click"/>
                 </StackPanel>
                 <Ellipse Grid.Column="5" x:Name="StatusDot" Width="12" Height="12"
                          Fill="#f38ba8" Margin="12,0,0,0" VerticalAlignment="Center"/>
@@ -470,12 +471,12 @@
                     <ColumnDefinition Width="56"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" x:Name="UploadLabel" Text="📤" Foreground="#cdd6f4"
-                           VerticalAlignment="Center" Margin="0,0,8,0" FontSize="12"/>
+                           VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13"/>
                 <ProgressBar Grid.Column="1" x:Name="UploadBar" Height="14" Minimum="0" Maximum="100"
                              Background="#313244" Foreground="#89b4fa" BorderThickness="0"/>
                 <TextBlock Grid.Column="2" x:Name="UploadPct" Text="0%" Foreground="#cdd6f4"
                            VerticalAlignment="Center" HorizontalAlignment="Right"
-                           FontFamily="Consolas" FontSize="11"/>
+                           FontFamily="Consolas" FontSize="13"/>
             </Grid>
         </Border>
 
@@ -510,7 +511,7 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
                                 <TextBlock x:Name="TbElapsed" Text="--:--" FontFamily="Consolas" FontSize="13"
                                            Foreground="#a6e3a1" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="TbTrackInfo" Text="" FontSize="12"
+                                <TextBlock x:Name="TbTrackInfo" Text="" FontSize="13"
                                            Foreground="#6c7086" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -553,8 +554,8 @@
                             </StackPanel>
                             <Border Grid.Column="1" Background="#1e1e2e" CornerRadius="4" Margin="16,0,0,0" Padding="10,6">
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock x:Name="TbFileCodec"      Text="—" Foreground="#89b4fa" FontFamily="Consolas" FontSize="12"/>
-                                    <TextBlock x:Name="TbFileSampleRate" Text=""  Foreground="#a6adc8" FontFamily="Consolas" FontSize="11" Margin="0,2,0,0"/>
+                                    <TextBlock x:Name="TbFileCodec"      Text="—" Foreground="#89b4fa" FontFamily="Consolas" FontSize="13"/>
+                                    <TextBlock x:Name="TbFileSampleRate" Text=""  Foreground="#a6adc8" FontFamily="Consolas" FontSize="13" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -581,13 +582,12 @@
                                         Style="{StaticResource AVFaderH}"
                                         VerticalAlignment="Center" IsEnabled="False"
                                         ValueChanged="SlVolume_ValueChanged"/>
-                                <TextBlock x:Name="TbVolume" Text="80%" Foreground="#cdd6f4" FontFamily="Consolas"
-                                           FontSize="12" VerticalAlignment="Center" Margin="6,0,0,0" Width="36"/>
+                                <TextBlock x:Name="TbVolume" Text="80%" Foreground="#cdd6f4"                                           FontSize="13" VerticalAlignment="Center" Margin="6,0,0,0" Width="36"/>
                                 <Border x:Name="MonoToggleBorder" Width="90" Height="24" CornerRadius="12"
                                         Background="#45475a" Margin="12,0,0,0" Cursor="Hand"
                                         MouseLeftButtonUp="MonoToggle_Click" IsEnabled="False">
                                     <Grid>
-                                        <TextBlock x:Name="TbMonoLabel" Text="STEREO" FontSize="9" FontWeight="Bold"
+                                        <TextBlock x:Name="TbMonoLabel" Text="STEREO" FontSize="13" FontWeight="Bold"
                                                    Foreground="#a6adc8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         <Ellipse x:Name="MonoThumb" Width="18" Height="18" Fill="#cdd6f4"
                                                  HorizontalAlignment="Left" Margin="3,0,0,0" VerticalAlignment="Center"/>
@@ -605,12 +605,12 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
-                                <TextBlock Text="32-Band EQ" Foreground="#a6adc8" FontSize="11"
+                                <TextBlock Text="32-Band EQ" Foreground="#a6adc8" FontSize="13"
                                            VerticalAlignment="Center" Margin="0,0,12,0"/>
                                 <Button x:Name="BtnEqReset" Content="Flat Reset" Style="{StaticResource DarkBtn}"
-                                        FontSize="10" Padding="8,3" IsEnabled="False" Click="BtnEqReset_Click"/>
+                                        FontSize="13" Padding="8,3" IsEnabled="False" Click="BtnEqReset_Click"/>
                                 <TextBlock Text="  0=-12dB  100=flat  200=+12dB" Foreground="#45475a"
-                                           FontSize="10" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                           FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
                             </StackPanel>
                             <StackPanel x:Name="EqPanel" Grid.Row="1" Orientation="Horizontal"/>
                         </Grid>
@@ -624,12 +624,12 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="8,6,8,4">
-                                <TextBlock Text="Serial Log" Foreground="#6c7086" FontSize="11"/>
+                                <TextBlock Text="Serial Log" Foreground="#6c7086" FontSize="13"/>
                                 <Button x:Name="BtnClearLog" Content="Clear" Style="{StaticResource DarkBtn}"
-                                        FontSize="10" Padding="6,2" Margin="8,0,0,0" Click="BtnClearLog_Click"/>
+                                        FontSize="13" Padding="6,2" Margin="8,0,0,0" Click="BtnClearLog_Click"/>
                             </StackPanel>
                             <TextBox x:Name="TbLog" Grid.Row="1"
-                                     FontFamily="Consolas" FontSize="11"
+                                     FontFamily="Consolas" FontSize="13"
                                      Foreground="#cdd6f4" Background="Transparent"
                                      BorderThickness="0" Padding="8,4"
                                      TextWrapping="Wrap" IsReadOnly="True"
@@ -666,11 +666,11 @@
                             <ColumnDefinition Width="162"/>
                             <ColumnDefinition Width="30"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="1" Text="Start"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="2" Text="Stop"                    Foreground="#f38ba8" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                        <TextBlock Grid.Column="3" Text="Tracks (comma-sep, no ext)" Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="6,0,0,0"/>
-                        <TextBlock Grid.Column="4" Text="Loops"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <TextBlock Grid.Column="5" Text="Mo   Tu   We   Th   Fr   Sa   Su" Foreground="#6c7086" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <TextBlock Grid.Column="1" Text="Start"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="Stop"                    Foreground="#f38ba8" FontFamily="Consolas" FontSize="13" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <TextBlock Grid.Column="3" Text="Tracks (comma-sep, no ext)" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                        <TextBlock Grid.Column="4" Text="Loops"                   Foreground="#6c7086" FontFamily="Consolas" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="Mo   Tu   We   Th   Fr   Sa   Su" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" VerticalAlignment="Center" Margin="4,0,0,0"/>
                     </Grid>
 
                     <!-- Toolbar -->
@@ -679,29 +679,29 @@
                         <!-- Mode selector -->
                         <Border Background="#181825" CornerRadius="6" Padding="10,6" Margin="0,0,0,8">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="โหมด:" Foreground="#6c7086" FontSize="12"
+                                <TextBlock Text="โหมด:" Foreground="#6c7086" FontSize="13"
                                            VerticalAlignment="Center" Margin="0,0,12,0"/>
                                 <RadioButton x:Name="RbPicoScheduler" Tag="pico" IsChecked="True"
-                                             Foreground="#cdd6f4" FontSize="12" VerticalAlignment="Center"
+                                             Foreground="#cdd6f4" FontSize="13" VerticalAlignment="Center"
                                              Margin="0,0,20,0" Checked="SchedModeChanged">
                                     <RadioButton.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="🤖 " FontSize="13"/>
-                                            <TextBlock Text="Pico Scheduler" FontSize="12" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Pico Scheduler" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </RadioButton.Content>
                                 </RadioButton>
                                 <RadioButton x:Name="RbGuiScheduler" Tag="gui"
-                                             Foreground="#cdd6f4" FontSize="12" VerticalAlignment="Center"
+                                             Foreground="#cdd6f4" FontSize="13" VerticalAlignment="Center"
                                              Checked="SchedModeChanged">
                                     <RadioButton.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="🖥️ " FontSize="13"/>
-                                            <TextBlock Text="GUI Scheduler (PC controls)" FontSize="12" VerticalAlignment="Center"/>
+                                            <TextBlock Text="GUI Scheduler (PC controls)" FontSize="13" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </RadioButton.Content>
                                 </RadioButton>
-                                <TextBlock Foreground="#585b70" FontSize="11" VerticalAlignment="Center" Margin="20,0,0,0"
+                                <TextBlock Foreground="#585b70" FontSize="13" VerticalAlignment="Center" Margin="20,0,0,0"
                                            Text="Pico = Pico ดูเวลาเอง  |  GUI = PC สั่งเล่นตามเวลา (Pico scheduler หยุดชั่วคราว — entries ยังอยู่)"/>
                             </StackPanel>
                         </Border>
@@ -709,19 +709,19 @@
                         <!-- Buttons row -->
                         <WrapPanel Orientation="Horizontal">
                             <Button x:Name="BtnAddSchedule"   Content="＋  Add Entry" Style="{StaticResource DarkBtn}"
-                                    FontSize="12" Padding="14,6" Click="BtnAddSchedule_Click"/>
+                                    FontSize="13" Padding="14,6" Click="BtnAddSchedule_Click"/>
                             <Button x:Name="BtnClearSchedule" Content="Clear All"     Style="{StaticResource DarkBtn}"
-                                    FontSize="12" Padding="14,6" Margin="8,0,0,0"     Click="BtnClearSchedule_Click"/>
+                                    FontSize="13" Padding="14,6" Margin="8,0,0,0"     Click="BtnClearSchedule_Click"/>
                             <Rectangle Width="1" Fill="#383858" Margin="14,4"/>
                             <Button x:Name="BtnSendToPico" Style="{StaticResource AccentBtn}"
-                                    FontSize="12" Padding="14,6" IsEnabled="False" Click="BtnSendToPico_Click">
+                                    FontSize="13" Padding="14,6" IsEnabled="False" Click="BtnSendToPico_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="↓ " FontSize="14" VerticalAlignment="Center"/>
                                     <TextBlock Text="Send → Pico" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button x:Name="BtnPullFromPico" Style="{StaticResource DarkBtn}"
-                                    FontSize="12" Padding="14,6" Margin="8,0,0,0" IsEnabled="False" Click="BtnPullFromPico_Click">
+                                    FontSize="13" Padding="14,6" Margin="8,0,0,0" IsEnabled="False" Click="BtnPullFromPico_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="↑ " FontSize="14" VerticalAlignment="Center"/>
                                     <TextBlock Text="Pull ← Pico" VerticalAlignment="Center"/>
@@ -729,11 +729,11 @@
                             </Button>
                             <Rectangle Width="1" Fill="#383858" Margin="14,4"/>
                             <Button x:Name="BtnSaveSchedFile" Content="💾  Save File" Style="{StaticResource DarkBtn}"
-                                    FontSize="12" Padding="14,6" Click="BtnSaveSchedFile_Click"/>
+                                    FontSize="13" Padding="14,6" Click="BtnSaveSchedFile_Click"/>
                             <Button x:Name="BtnLoadSchedFile" Content="📂  Load File" Style="{StaticResource DarkBtn}"
-                                    FontSize="12" Padding="8,6" Margin="8,0,0,0"  Click="BtnLoadSchedFile_Click"/>
+                                    FontSize="13" Padding="8,6" Margin="8,0,0,0"  Click="BtnLoadSchedFile_Click"/>
                             <TextBlock x:Name="TbSchedStatus" Text="" Foreground="#5acc5a"
-                                       FontSize="12" FontFamily="Consolas" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                                       FontSize="13" FontFamily="Consolas" VerticalAlignment="Center" Margin="20,0,0,0"/>
                         </WrapPanel>
                     </StackPanel>
 
@@ -761,7 +761,7 @@
 
                         <!-- ── Connection ── -->
                         <TextBlock Text="การเชื่อมต่อ" Foreground="#89b4fa" FontSize="13" FontWeight="Bold" Margin="0,0,0,6"/>
-                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,4">
+                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,4">
                             1. เสียบ Pico 2 ผ่าน USB&#10;2. เลือก COM port จาก dropdown ด้านบน&#10;3. คลิก Connect — สถานะจะเปลี่ยนเป็นสีเขียวเมื่อเชื่อมต่อสำเร็จ
                         </TextBlock>
 
@@ -779,30 +779,30 @@
                                 <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
                             </Grid.RowDefinitions>
                             <!-- headers -->
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ปุ่ม / ช่อง" Foreground="#585b70" FontSize="11" FontFamily="Consolas" Margin="0,0,0,4"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="หน้าที่"     Foreground="#585b70" FontSize="11" FontFamily="Consolas" Margin="8,0,0,4"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ปุ่ม / ช่อง" Foreground="#585b70" FontSize="13" FontFamily="Consolas" Margin="0,0,0,4"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="หน้าที่"     Foreground="#585b70" FontSize="13" FontFamily="Consolas" Margin="8,0,0,4"/>
                             <!-- rows -->
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Play"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="เล่น / ยกเลิก pause" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Pause"       Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="หยุดชั่วคราว" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="หยุด" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="◀ Prev / Next ▶" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="เพลงก่อนหน้า / ถัดไป" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Volume slider" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="ระดับเสียง 0–100 (บันทึกลง SD อัตโนมัติ)" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Mono"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="สลับโหมด mono / stereo" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Track list"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ดับเบิลคลิกเพื่อกระโดดไปยัง track นั้น" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Play"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="เล่น / ยกเลิก pause" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Pause"       Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="หยุดชั่วคราว" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="หยุด" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="◀ Prev / Next ▶" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="เพลงก่อนหน้า / ถัดไป" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Volume slider" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="ระดับเสียง 0–100 (บันทึกลง SD อัตโนมัติ)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Mono"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="สลับโหมด mono / stereo" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Track list"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ดับเบิลคลิกเพื่อกระโดดไปยัง track นั้น" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
                         </Grid>
 
                         <Rectangle Height="1" Fill="#313244" Margin="0,12,0,12"/>
 
                         <!-- ── EQ ── -->
                         <TextBlock Text="แท็บ EQ" Foreground="#89b4fa" FontSize="13" FontWeight="Bold" Margin="0,0,0,6"/>
-                        <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="12" Margin="0,0,0,4">
+                        <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="0,0,0,4">
                             EQ 32 band — ปรับ slider แต่ละ band ได้ตั้งแต่ −12 dB ถึง +12 dB
                         </TextBlock>
                         <Grid Margin="0,4,0,4">
@@ -813,17 +813,17 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition/><RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ปรับ slider"    Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="ส่งคำสั่ง eq band ไปยัง Pico ทันที และ sync กลับเมื่อเชื่อมต่อ" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0" TextWrapping="Wrap"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Reset"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="คืน EQ ทุก band เป็น flat (0 dB)" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ปรับ slider"    Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="ส่งคำสั่ง eq band ไปยัง Pico ทันที และ sync กลับเมื่อเชื่อมต่อ" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Reset"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="คืน EQ ทุก band เป็น flat (0 dB)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
                         </Grid>
 
                         <Rectangle Height="1" Fill="#313244" Margin="0,12,0,12"/>
 
                         <!-- ── Schedule ── -->
                         <TextBlock Text="แท็บ Schedule" Foreground="#89b4fa" FontSize="13" FontWeight="Bold" Margin="0,0,0,8"/>
-                        <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="12" Margin="0,0,0,8">
+                        <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="0,0,0,8">
                             ตั้งให้ Pico เล่นเพลงอัตโนมัติตามวันและเวลาที่กำหนด
                         </TextBlock>
                         <Grid Margin="0,0,0,8">
@@ -835,27 +835,27 @@
                                 <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
                                 <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ช่อง"          Foreground="#585b70" FontSize="11" FontFamily="Consolas" Margin="0,0,0,4"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="รายละเอียด"    Foreground="#585b70" FontSize="11" FontFamily="Consolas" Margin="8,0,0,4"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="ช่อง"          Foreground="#585b70" FontSize="13" FontFamily="Consolas" Margin="0,0,0,4"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="รายละเอียด"    Foreground="#585b70" FontSize="13" FontFamily="Consolas" Margin="8,0,0,4"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="✓ (checkbox)"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="เปิด/ปิด entry นี้" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Start"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="เวลาเริ่มเล่น (HH MM สองช่องแยก)" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop"           Foreground="#f38ba8" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="เวลาหยุด — ว่างไว้หากไม่ต้องการ" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Tracks"         Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0">
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="✓ (checkbox)"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="เปิด/ปิด entry นี้" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Start"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="เวลาเริ่มเล่น (HH MM สองช่องแยก)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop"           Foreground="#f38ba8" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="เวลาหยุด — ว่างไว้หากไม่ต้องการ" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Tracks"         Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0">
                                 ชื่อไฟล์คั่นด้วย comma ไม่ต้องใส่นามสกุล&#10;ตัวอย่าง: <Run Foreground="#fab387">song1,jazz2,bgm</Run>
                             </TextBlock>
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Loops"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="จำนวนรอบ playlist  (0 = วนไม่รู้จบ)" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Days"            Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="เลือกวันที่จะเล่น จันทร์–อาทิตย์" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="7" Grid.Column="0" Text="🗑 (ลบ)"         Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ลบ entry แถวนั้น" Foreground="#cdd6f4" FontSize="12" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Loops"          Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="จำนวนรอบ playlist  (0 = วนไม่รู้จบ)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Days"            Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="เลือกวันที่จะเล่น จันทร์–อาทิตย์" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="🗑 (ลบ)"         Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ลบ entry แถวนั้น" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,4">
+                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,4">
                             <Run FontWeight="Bold" Foreground="#cdd6f4">Send → Pico</Run>  ส่ง schedule ทั้งหมดไปบันทึกลง SD card ของ Pico&#10;<Run FontWeight="Bold" Foreground="#cdd6f4">Pull ← Pico</Run>  ดึง schedule จาก SD card ของ Pico มาแสดงใน GUI&#10;<Run FontWeight="Bold" Foreground="#cdd6f4">Save File</Run>    บันทึก schedule เป็นไฟล์ .json ลงเครื่อง PC&#10;<Run FontWeight="Bold" Foreground="#cdd6f4">Load File</Run>    โหลดไฟล์ .json กลับมาแสดงใน GUI
                         </TextBlock>
 
@@ -863,35 +863,35 @@
 
                         <!-- ── Serial Commands ── -->
                         <TextBlock Text="Serial Commands (อ้างอิง)" Foreground="#89b4fa" FontSize="13" FontWeight="Bold" Margin="0,0,0,8"/>
-                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="11" Margin="0,0,0,6">
+                        <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,6">
                             สามารถส่งคำสั่งโดยตรงจากช่อง Serial Console ด้านล่างซ้าย
                         </TextBlock>
 
                         <!-- Command table -->
                         <Border Background="#181825" CornerRadius="6" Padding="12,10" Margin="0,0,0,4">
                             <StackPanel>
-                                <TextBlock Text="Playback" Foreground="#6c7086" FontSize="11" Margin="0,0,0,6"/>
-                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" TextWrapping="Wrap">
+                                <TextBlock Text="Playback" Foreground="#6c7086" FontSize="13" Margin="0,0,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#cdd6f4" TextWrapping="Wrap">
                                     <Run Foreground="#a6e3a1">play</Run>  /  <Run Foreground="#a6e3a1">pause</Run>  /  <Run Foreground="#a6e3a1">stop</Run>  /  <Run Foreground="#a6e3a1">next</Run>  /  <Run Foreground="#a6e3a1">prev</Run>&#10;<Run Foreground="#a6e3a1">goto</Run> <Run Foreground="#fab387">&lt;trackname&gt;</Run>    — กระโดดไปยัง track (ไม่ต้องใส่นามสกุล)&#10;<Run Foreground="#a6e3a1">status</Run>            — แสดงสถานะปัจจุบัน&#10;<Run Foreground="#a6e3a1">version</Run>           — แสดง firmware version
                                 </TextBlock>
 
-                                <TextBlock Text="Volume &amp; EQ" Foreground="#6c7086" FontSize="11" Margin="0,12,0,6"/>
-                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" TextWrapping="Wrap">
+                                <TextBlock Text="Volume &amp; EQ" Foreground="#6c7086" FontSize="13" Margin="0,12,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#cdd6f4" TextWrapping="Wrap">
                                     <Run Foreground="#a6e3a1">volume</Run> <Run Foreground="#fab387">&lt;0-100&gt;</Run>&#10;<Run Foreground="#a6e3a1">eq band</Run> <Run Foreground="#fab387">&lt;0-31&gt; &lt;-12..12&gt;</Run>&#10;<Run Foreground="#a6e3a1">eq reset</Run>&#10;<Run Foreground="#a6e3a1">mono on</Run>|<Run Foreground="#a6e3a1">off</Run>
                                 </TextBlock>
 
-                                <TextBlock Text="Repeat Mode" Foreground="#6c7086" FontSize="11" Margin="0,12,0,6"/>
-                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" TextWrapping="Wrap">
+                                <TextBlock Text="Repeat Mode" Foreground="#6c7086" FontSize="13" Margin="0,12,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#cdd6f4" TextWrapping="Wrap">
                                     <Run Foreground="#a6e3a1">mode repeat_one</Run>      — วนซ้ำ track เดิม&#10;<Run Foreground="#a6e3a1">mode repeat_all</Run>      — วนทุก track&#10;<Run Foreground="#a6e3a1">mode repeat_off</Run>      — ไม่วน&#10;<Run Foreground="#a6e3a1">mode repeat_single</Run>   — เล่น track เดียวแล้วหยุด&#10;<Run Foreground="#a6e3a1">mode autoplay_on</Run>|<Run Foreground="#a6e3a1">off</Run>  — เล่นอัตโนมัติตอน boot
                                 </TextBlock>
 
-                                <TextBlock Text="Date / Time" Foreground="#6c7086" FontSize="11" Margin="0,12,0,6"/>
-                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" TextWrapping="Wrap">
+                                <TextBlock Text="Date / Time" Foreground="#6c7086" FontSize="13" Margin="0,12,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#cdd6f4" TextWrapping="Wrap">
                                     <Run Foreground="#a6e3a1">date</Run> <Run Foreground="#fab387">YYYY-MM-DD HH:MM:SS</Run>&#10;<Run Foreground="#a6e3a1">time</Run> <Run Foreground="#fab387">HH:MM:SS</Run>
                                 </TextBlock>
 
-                                <TextBlock Text="Scheduler" Foreground="#6c7086" FontSize="11" Margin="0,12,0,6"/>
-                                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" TextWrapping="Wrap">
+                                <TextBlock Text="Scheduler" Foreground="#6c7086" FontSize="13" Margin="0,12,0,6"/>
+                                <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#cdd6f4" TextWrapping="Wrap">
                                     <Run Foreground="#a6e3a1">sched list</Run>&#10;<Run Foreground="#a6e3a1">sched clear</Run>&#10;<Run Foreground="#a6e3a1">sched save</Run>&#10;<Run Foreground="#a6e3a1">sched add</Run> <Run Foreground="#fab387">time=HH:MM [stop=HH:MM] tracks=n1,n2 [loops=N] [days=1111111] [enabled=1]</Run>
                                 </TextBlock>
                             </StackPanel>
@@ -902,22 +902,22 @@
                         <!-- ── Tips ── -->
                         <TextBlock Text="เคล็ดลับ" Foreground="#89b4fa" FontSize="13" FontWeight="Bold" Margin="0,0,0,8"/>
                         <StackPanel>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • ชื่อไฟล์ใน Tracks ไม่ต้องใส่นามสกุล (.mp3/.wav/.flac) และไม่ต้องสนใจตัวพิมพ์เล็ก-ใหญ่
                             </TextBlock>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • loops = 0 คือวนไม่รู้จบจนกว่าถึงเวลา Stop หรือกด Stop เอง
                             </TextBlock>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • 1 loop นับเป็น 1 รอบของ playlist ทั้งหมด ไม่ใช่ 1 เพลง
                             </TextBlock>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • ไฟล์ schedule บน Pico อยู่ที่ <Run FontFamily="Consolas" Foreground="#fab387">0:/config/schedule.txt</Run>
                             </TextBlock>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • ค่า EQ และ volume บันทึกลง SD อัตโนมัติเมื่อเปลี่ยน
                             </TextBlock>
-                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="12" Margin="0,0,0,5">
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • ถ้า port ไม่ขึ้น ให้กด Refresh หรือถอด-เสียบ USB ใหม่
                             </TextBlock>
                         </StackPanel>
@@ -948,8 +948,8 @@
 
                         <!-- Description -->
                         <TextBlock Text="เกี่ยวกับโปรเจค" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#89b4fa" Margin="0,0,0,8" FontFamily="Segoe UI"/>
-                        <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="13"
+                                   Foreground="#89b4fa" Margin="0,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="13"
                                    Foreground="#cdd6f4" LineHeight="22" Margin="0,0,0,20">
                             PicoAudioCore คือระบบเล่นเสียงดิจิทัล In-house สร้างบน Raspberry Pi Pico 2 (RP2350)
                             รองรับ MP3 / WAV / FLAC ออกเสียงผ่าน MCP4922 12-bit DAC แยกชิป
@@ -960,7 +960,7 @@
 
                         <!-- Tech stack -->
                         <TextBlock Text="Tech Stack" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#89b4fa" Margin="0,0,0,10" FontFamily="Segoe UI"/>
+                                   Foreground="#89b4fa" Margin="0,0,0,10"/>
                         <Grid Margin="0,0,0,20">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="160"/>
@@ -977,36 +977,36 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="MCU" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Raspberry Pi Pico 2  (RP2350, Cortex-M33 240 MHz)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="MCU" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Raspberry Pi Pico 2  (RP2350, Cortex-M33 240 MHz)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="DAC" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="MCP4922  12-bit  Dual  (PIO SPI)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="DAC" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="MCP4922  12-bit  Dual  (PIO SPI)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="RTOS" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="FreeRTOS SMP  (2 cores)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="RTOS" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="FreeRTOS SMP  (2 cores)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="DSP / EQ" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CMSIS-DSP  ·  32-band Peaking Biquad  ±12 dB" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="DSP / EQ" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CMSIS-DSP  ·  32-band Peaking Biquad  ±12 dB" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Formats" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="MP3 (minimp3)  ·  WAV 8/16-bit  ·  FLAC ≤48 kHz (dr_flac)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Formats" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="MP3 (minimp3)  ·  WAV 8/16-bit  ·  FLAC ≤48 kHz (dr_flac)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Storage" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="SD card  FatFS  SPI  ·  สูงสุด 500 tracks" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Storage" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="SD card  FatFS  SPI  ·  สูงสุด 500 tracks" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="WPF  .NET 10  C#  (Windows)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="WPF  .NET 10  C#  (Windows)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
-                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Scheduler" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="Powman AON Timer RTC  ·  16 entries  ·  Dual-mode" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Scheduler" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="Powman AON Timer RTC  ·  16 entries  ·  Dual-mode" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
                         </Grid>
 
                         <Separator Background="#383858" Margin="0,0,0,20"/>
 
                         <!-- Version info -->
                         <TextBlock Text="เวอร์ชัน" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#89b4fa" Margin="0,0,0,10" FontFamily="Segoe UI"/>
+                                   Foreground="#89b4fa" Margin="0,0,0,10"/>
                         <Grid Margin="0,0,0,20">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="160"/>
@@ -1017,12 +1017,12 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="v2.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Firmware" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="v1.7" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository" Foreground="#6c7086" FontFamily="Consolas" FontSize="12" Margin="0,3"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" FontFamily="Consolas" FontSize="12" Margin="0,3">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="v2.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Firmware" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="v1.7" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" FontFamily="Consolas" FontSize="13" Margin="0,3">
                                 <Hyperlink NavigateUri="https://github.com/fildsady/sonopilot-pc"
                                            RequestNavigate="Hyperlink_RequestNavigate"
                                            Foreground="#89dceb">github.com/fildsady/sonopilot-pc</Hyperlink>
@@ -1032,9 +1032,8 @@
                         <Separator Background="#383858" Margin="0,0,0,20"/>
 
                         <!-- License -->
-                        <TextBlock Text="License  —  MIT" FontSize="12" FontFamily="Consolas"
-                                   Foreground="#585b70" Margin="0,0,0,4"/>
-                        <TextBlock TextWrapping="Wrap" FontFamily="Segoe UI" FontSize="12"
+                        <TextBlock Text="License  —  MIT" FontSize="13"                                   Foreground="#585b70" Margin="0,0,0,4"/>
+                        <TextBlock TextWrapping="Wrap" FontSize="13"
                                    Foreground="#45475a" LineHeight="20">
                             Permission is hereby granted, free of charge, to any person obtaining a copy of this software
                             to use, copy, modify, merge, publish, and distribute subject to the MIT License conditions.
@@ -1049,7 +1048,7 @@
         <!-- Hotkey panel -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#313244" CornerRadius="6" Padding="10,10">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Hotkeys" Foreground="#a6adc8" FontSize="11"
+                <TextBlock DockPanel.Dock="Top" Text="Hotkeys" Foreground="#a6adc8" FontSize="13"
                            Margin="0,0,0,8" HorizontalAlignment="Center"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ScrollViewer.Resources>
