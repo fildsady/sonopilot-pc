@@ -9,6 +9,14 @@
         ResizeMode="CanResizeWithGrip"
         StateChanged="Window_StateChanged">
 
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+                      ResizeBorderThickness="5"
+                      GlassFrameThickness="0"
+                      NonClientFrameEdges="None"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
     <Window.Resources>
         <!-- ── Base console button ─────────────────────────────────────────── -->
         <Style x:Key="DarkBtn" TargetType="Button">
