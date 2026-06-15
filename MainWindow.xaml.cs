@@ -639,6 +639,7 @@ public partial class MainWindow : Window
 
     private async void SchedModeChanged(object sender, RoutedEventArgs e)
     {
+        if (TbSchedStatus == null) return;   /* fired during XAML init before controls exist */
         if (sender is not RadioButton rb) return;
         bool isPico = rb.Tag?.ToString() == "pico";
         _schedMode = isPico ? SchedMode.PicoScheduler : SchedMode.GuiScheduler;
@@ -673,6 +674,7 @@ public partial class MainWindow : Window
 
     private void UpdateSchedModeUI()
     {
+        if (BtnSendToPico == null || BtnPullFromPico == null) return;
         bool isPico = _schedMode == SchedMode.PicoScheduler;
         BtnSendToPico.Visibility  = isPico ? Visibility.Visible : Visibility.Collapsed;
         BtnPullFromPico.Visibility = isPico ? Visibility.Visible : Visibility.Collapsed;
