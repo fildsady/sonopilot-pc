@@ -1,5 +1,5 @@
 using System.Windows;
 
-namespace PicoHidConsole;
+namespace PicoVendorConsole;
 
 public partial class App : Application { }
