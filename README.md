@@ -11,7 +11,7 @@
 
 - **ควบคุม Playback** — Play, Pause, Stop, Next, Prev, Goto (ชื่อไฟล์หรือหมายเลข track)
 - **Repeat Mode** — All / One / Off / Single / Random (ใช้ RP2350 hardware TRNG)
-- **32-band Graphic EQ** — ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ
+- **10-band Graphic EQ** — ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ
 - **Volume & Mono** — slider 0–100, สลับ mono ได้
 - **Schedule Editor** — สองโหมด (Pico Scheduler / GUI Scheduler), multi-track, กำหนดวันและเวลาหยุด
 - **Pull Schedule จาก Pico** — ดึง schedule ที่บันทึกใน SD กลับมาแสดงใน GUI
@@ -104,7 +104,7 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 
 ### แท็บ EQ
 
-- Slider 32 ช่อง (16 Hz – 20 kHz) ครอบคลุมย่าน 1/3-octave, range ±12 dB
+- Slider 10 ช่อง (31.5 Hz – 16 kHz) ครอบคลุมย่าน 1-octave, range ±12 dB
 - ปรับ slider → ส่งคำสั่ง `eq band N value` ไปยัง Pico ทันที
 - **Reset** — คืน EQ ทุก band เป็น flat (0 dB)
 - ค่า EQ ถูกบันทึกลง SD card ของ Pico ผ่านคำสั่ง `eq band`
