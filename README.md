@@ -1,73 +1,45 @@
-# PicoAudioCore — PC GUI v3.1 (Windows)
+# SonoPilot PC — GUI v3.1 (Windows)
 
-แอปพลิเคชัน **WPF (.NET 10, Windows)** สำหรับควบคุม PicoAudioCore Firmware ผ่าน USB Serial  
-รองรับการตั้งค่า EQ, Schedule, Signal Generator, Volume และเรียกดูไฟล์บน SD card
+แอปพลิเคชัน WPF (.NET 10, Windows) สำหรับควบคุม **SonoPilot Firmware** บน Raspberry Pi Pico 2 ผ่าน USB HID  
+รองรับการควบคุม Playback, EQ, Scheduler, Signal Generator, MIDI CUE และการจัดการไฟล์บน SD card
 
----
-
-## What's New
-
-### v3.1
-- **Quick Controls** — ปุ่ม ▶ ⏸ ⏹ ใน connection bar ด้านบน กด Play/Pause/Stop ได้จากทุก tab ไม่ต้องสลับไปหน้า Player
-
-### v3.0
-- **MIDI CUE** — เพิ่มแท็บ MIDI CUE ใหม่ เชื่อม MIDI Input (USB keyboard หรือ DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่ง play / stop / goto / next / prev
-- **USB MIDI Keyboard** — รองรับ USB MIDI keyboard ที่ต่อตรงกับ PC โดยไม่ต้องติดตั้ง driver เพิ่ม
-- **Dark UI Consistency** — ปรับ dropdown ทุกตัวที่สร้างใน code ให้ใช้ Catppuccin dark theme เหมือนกันหมด ไม่มี Windows default สีขาวรั่วออกมา
-
-### v2.1
-- Signal Generator (Sine / Square / Triangle / Sawtooth / White Noise / Pink Noise)
-- Live frequency control ขณะ running ผ่าน `sigfreq` command
-- Volume (dBFS) sync กับ Player tab
-
-### v2.0
-- 32-band Graphic EQ, ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ
-- Schedule Editor: Pico Scheduler และ GUI Scheduler, multi-track, Stop Time, Day selector
-- Pull Schedule จาก Pico, Save/Load JSON
-- Autoconnect, Run on Startup
+เฟิร์มแวร์ที่รองรับ: **[SonoPilot Firmware v1.7+](https://github.com/fildsady/sonopilot-firmware)**
 
 ---
 
-## คุณสมบัติ
+## คุณสมบัติหลัก
 
-- **เชื่อมต่อ USB Serial** — เลือก COM port, Connect/Disconnect
-- **Autoconnect** — เชื่อมต่อ port ล่าสุดอัตโนมัติเมื่อเปิดแอป (toggle ได้)
-- **Run on Startup** — เพิ่มเข้า Windows startup (HKCU registry)
-- **ควบคุม Playback** — Play, Pause, Stop, Next, Prev, กระโดดไปยัง track ใดก็ได้
-- **32-band EQ** — ปรับ slider ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ, Reset to flat
-- **Volume** — slider 0–100 sync กับ Pico
-- **Mono toggle**
-- **Schedule Editor** — ตั้งเวลาเล่นอัตโนมัติ, หลาย track ต่อ entry, กำหนดวัน
-- **สองโหมด Schedule** — Pico Scheduler (เก็บใน SD) หรือ GUI Scheduler (PC สั่งเล่น)
-- **Pull Schedule จาก Pico** — ดึง schedule ที่บันทึกอยู่ใน SD กลับมาแสดงใน GUI
-- **Save / Load Schedule** — บันทึกเป็น JSON ลงเครื่อง PC
-- **Audio Signal Generator** — Sine / Square / Triangle / Sawtooth / White Noise / Pink Noise  
-  ปรับความถี่ 1–20000 Hz แบบ live slider, ปรับ Volume (dBFS) ขณะ running
-- **Log console** — แสดง Serial response แบบ real-time
-- **Custom dark title bar** — ออกแบบให้เข้ากับ theme (WindowChrome, ไม่มี Windows chrome)
-- **MIDI CUE** — เชื่อม MIDI Input (USB keyboard หรือ DAW ผ่าน loopMIDI) ให้กดโน้ตแล้วสั่ง play/stop/goto track ได้ทันที
+- **ควบคุม Playback** — Play, Pause, Stop, Next, Prev, Goto (ชื่อไฟล์หรือหมายเลข track)
+- **Repeat Mode** — All / One / Off / Single / Random (ใช้ RP2350 hardware TRNG)
+- **32-band Graphic EQ** — ±12 dB ต่อ band, sync กับ Pico อัตโนมัติ
+- **Volume & Mono** — slider 0–100, สลับ mono ได้
+- **Schedule Editor** — สองโหมด (Pico Scheduler / GUI Scheduler), multi-track, กำหนดวันและเวลาหยุด
+- **Pull Schedule จาก Pico** — ดึง schedule ที่บันทึกใน SD กลับมาแสดงใน GUI
+- **Audio Signal Generator** — 6 waveform, ปรับความถี่ live ขณะ running
+- **MIDI CUE** — เชื่อม MIDI Input ให้กดโน้ตแล้วสั่ง play/stop/goto ได้ทันที
+- **Quick Controls** — ปุ่ม ▶ ⏸ ⏹ ใน connection bar ด้านบน กดได้จากทุกแท็บ
+- **File Upload** — ส่งไฟล์เสียงขึ้น SD ผ่าน USB โดยตรง
+- **Autoconnect** — เชื่อมต่ออัตโนมัติเมื่อเปิดแอป
+- **Run on Startup** — เพิ่มเข้า Windows startup ได้
+- **Dark UI** — Catppuccin dark theme สม่ำเสมอทุก element
 
 ---
 
 ## Requirements
 
-- Windows 10/11
+- Windows 10/11 (64-bit)
 - [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (หรือ SDK สำหรับ build)
-- PicoAudioCore firmware v1.7+ เชื่อมต่อผ่าน USB
-- (Optional) [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) — สำหรับรับ MIDI จาก DAW (Cubase, Reaper)
+- SonoPilot Firmware v1.7+ เชื่อมต่อผ่าน USB
+- (Optional) [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) — สำหรับรับ MIDI จาก DAW
 
 ---
 
-## Build
+## Build & Run
 
 ```powershell
 git clone https://github.com/fildsady/sonopilot-pc
 cd sonopilot-pc
 dotnet build
-```
-
-Run:
-```powershell
 dotnet run
 ```
 
@@ -79,45 +51,74 @@ dotnet run
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
-ไฟล์ exe จะอยู่ที่ `publish/`
+ไฟล์ `.exe` จะอยู่ที่โฟลเดอร์ `publish/`
 
 ---
 
 ## การใช้งาน
 
-### 1. เชื่อมต่อ
+### เชื่อมต่อ
 
 1. เสียบ Pico 2 ผ่าน USB
 2. เลือก COM port จาก dropdown
-3. คลิก **Connect** — หรือเปิด **Autoconnect** ให้ต่ออัตโนมัติ
+3. คลิก **Connect** — หรือเปิด **Autoconnect** ให้ต่ออัตโนมัติทุกครั้งที่เปิดแอป
 
-### 2. แท็บ Player
+เมื่อเชื่อมต่อสำเร็จ GUI จะส่ง `status` ทันทีเพื่อดึงสถานะปัจจุบัน (repeat mode, ระดับเสียง, track ที่กำลังเล่น) มาแสดงผลโดยไม่ต้องรอ poll รอบถัดไป
+
+---
+
+### แท็บ Player
+
+#### Playback
 
 | ปุ่ม | หน้าที่ |
 |------|---------|
-| Play | เล่น / ยกเลิก pause |
-| Pause | หยุดชั่วคราว |
-| Stop | หยุด |
-| ◀ Prev | เพลงก่อนหน้า |
-| Next ▶ | เพลงถัดไป |
+| ⏮ PREV | เพลงก่อนหน้า |
+| ▶ PLAY | เล่น / ยกเลิก pause |
+| ⏸ PAUSE | หยุดชั่วคราว |
+| ⏹ STOP | หยุด |
+| NEXT ⏭ | เพลงถัดไป |
 
-- **Volume slider** — drag หรือพิมพ์ค่า 0–100
+ในช่อง **Goto** ให้พิมพ์ชื่อไฟล์ (ไม่ต้องใส่นามสกุล) หรือ **หมายเลข track** (1-based) แล้วกด **Go** เพื่อกระโดดไปยัง track นั้นทันที
+
+#### Repeat Mode
+
+| ปุ่ม | โหมด |
+|------|------|
+| ⟳ One | วนซ้ำ track เดิม |
+| ⟳ All | วนทุก track ตามลำดับ |
+| ✕ Off | ไม่วน (หยุดหลัง track สุดท้าย) |
+| 1 Single | เล่น track เดียวแล้วหยุด |
+| 🎲 Random | สุ่ม track ถัดไป (RP2350 hardware TRNG) |
+
+- ปุ่มที่ active จะเปลี่ยนสีทันทีที่กด โดยไม่ต้องรอ STATUS กลับมา
+- เมื่อ Random mode เปิดอยู่ ปุ่ม PREV และ NEXT จะสุ่ม track ใหม่แทนการเลื่อนตามลำดับ
+- การตั้งค่า repeat mode จะซิงค์ลง SD card ของ Pico อัตโนมัติ
+
+#### Volume & Mono
+
+- **Volume slider** — ลากหรือพิมพ์ค่า 0–100, sync กับ Pico อัตโนมัติ
 - **Mono toggle** — เปิด/ปิดโหมด mono
 
-### 3. แท็บ EQ
+---
 
-- Slider 32 ช่อง (20 Hz – 20 kHz), range ±12 dB
+### แท็บ EQ
+
+- Slider 32 ช่อง (16 Hz – 20 kHz) ครอบคลุมย่าน 1/3-octave, range ±12 dB
 - ปรับ slider → ส่งคำสั่ง `eq band N value` ไปยัง Pico ทันที
 - **Reset** — คืน EQ ทุก band เป็น flat (0 dB)
+- ค่า EQ ถูกบันทึกลง SD card ของ Pico ผ่านคำสั่ง `eq band`
 
-### 4. แท็บ Schedule
+---
 
-#### โหมด Schedule
+### แท็บ Schedule
+
+#### เลือกโหมด Schedule
 
 | โหมด | การทำงาน |
-|------|---------|
-| 🤖 Pico Scheduler | ส่ง schedule ไปเก็บใน SD card, Pico ดูเวลาเองและสั่งเล่น |
-| 🖥️ GUI Scheduler | PC ดูเวลาและส่ง goto command เอง (Pico scheduler หยุดชั่วคราว ไม่ถูกลบ) |
+|------|----------|
+| 🤖 Pico Scheduler | ส่ง schedule ไปเก็บใน SD card, Pico ตรวจเวลาเองและสั่งเล่น (ทำงานแม้ปิด GUI) |
+| 🖥️ GUI Scheduler | PC ตรวจเวลาและส่ง `goto` command เอง (Pico Scheduler หยุดชั่วคราว ไม่ถูกลบ) |
 
 #### เพิ่ม Entry
 
@@ -126,60 +127,22 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 | ช่อง | รายละเอียด |
 |------|-----------|
 | ✓ | เปิด/ปิด entry นี้ |
-| Start | เวลาเริ่ม (HH MM สองช่องแยก) |
+| Start | เวลาเริ่ม (ช่อง HH และ MM แยกกัน) |
 | Stop | เวลาหยุด (ว่าง = ไม่มีเวลาหยุด) |
-| Tracks | ชื่อไฟล์คั่นด้วย comma (ไม่ต้องใส่นามสกุล) เช่น `song1,jazz2,bgm` |
+| Tracks | ชื่อไฟล์คั่นด้วย comma ไม่ต้องใส่นามสกุล เช่น `song1,jazz2,bgm` |
 | Loops | จำนวนรอบ playlist (`0` = วนไม่รู้จบ) |
 | Days | checkbox จันทร์–อาทิตย์ |
 
-> ช่อง Start/Stop ใช้สองช่องแยก HH และ MM เพื่อป้องกันการลบ colon โดยบังเอิญ
+#### ส่งและดึง Schedule
 
-#### ส่งไปยัง Pico
+| ปุ่ม | หน้าที่ |
+|------|---------|
+| **Send → Pico** | ส่ง schedule ทั้งหมดไปยัง Pico (`sched clear` → `sched add` ทีละ entry → `sched save`) |
+| **Pull ← Pico** | ดึง schedule ที่บันทึกอยู่ใน SD กลับมาแสดงใน GUI |
+| **Save File** | บันทึก schedule เป็น `.json` ลงเครื่อง PC |
+| **Load File** | โหลด `.json` กลับมาแสดงใน GUI (แทนที่ schedule ปัจจุบัน) |
 
-คลิก **Send → Pico** — ส่ง `sched clear` แล้วส่ง `sched add` ทีละ entry จากนั้น `sched save`
-
-#### ดึงจาก Pico
-
-คลิก **Pull ← Pico** — ส่ง `sched list` แล้ว parse response มาแสดงใน GUI
-
-#### Save / Load File
-
-- **Save File** — บันทึก schedule เป็น `.json` ลงเครื่อง PC
-- **Load File** — โหลด `.json` กลับมาแสดงใน GUI (แทนที่ schedule ปัจจุบัน)
-
-### 5. แท็บ MIDI CUE
-
-เชื่อม MIDI Input device (USB keyboard หรือ virtual port จาก DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่งคำสั่ง playback
-
-1. เลือก MIDI device จาก dropdown แล้วคลิก **Open**
-2. คลิก **＋ Add CUE** เพื่อเพิ่มแถวใหม่
-3. ระบุ MIDI note number (0–127) — หน้า GUI แสดงชื่อโน้ต (C3, D#4 ฯลฯ) อัตโนมัติ
-4. เลือก Command: `goto` / `play` / `stop` / `next` / `prev`
-5. ถ้าเลือก `goto` ให้ใส่ชื่อไฟล์ (ไม่ต้องใส่นามสกุล) ในช่อง Track
-
-CUE list บันทึกอัตโนมัติเป็น `midicues.json` ในโฟลเดอร์โปรแกรม
-
-### 6. แท็บ SigGen — Audio Signal Generator
-
-ใช้สร้างสัญญาณเสียงทดสอบออกทาง DAC โดยตรง เหมาะสำหรับทดสอบลำโพง, วัด frequency response หรือ burn-in ระบบเสียง
-
-| Waveform | ลักษณะ |
-|----------|--------|
-| Sine | คลื่นไซน์บริสุทธิ์ — ทดสอบความถี่เดี่ยว |
-| Square | คลื่นสี่เหลี่ยม — harmonics คี่สูง |
-| Triangle | คลื่นสามเหลี่ยม — harmonics คี่ลดลงเร็ว |
-| Sawtooth | คลื่นฟันเลื่อย — harmonics ทั้งคี่และคู่ |
-| White Noise | สัญญาณสุ่ม broadband — ทดสอบ full range |
-| Pink Noise | 1/f spectrum — ใกล้เคียงเสียงธรรมชาติ ใช้ room acoustics |
-
-- **Frequency slider** — ลากหรือพิมพ์ 1–20000 Hz  
-  เปลี่ยนความถี่แบบ **live** ขณะ running โดยไม่หยุดเสียง (ส่ง `sigfreq` command)
-- **Volume (dBFS)** — ปรับระดับเสียง sync กับ Player tab อัตโนมัติ
-- กด **Start** เพื่อเริ่ม → กด **Stop** เพื่อหยุดและกลับสู่โหมดเล่นเพลงปกติ
-
----
-
-## Schedule JSON Format
+#### ตัวอย่าง Schedule JSON
 
 ```json
 [
@@ -195,42 +158,75 @@ CUE list บันทึกอัตโนมัติเป็น `midicues.jso
 ```
 
 `Days` = array 7 ตัว [จันทร์, อังคาร, พุธ, พฤหัส, ศุกร์, เสาร์, อาทิตย์]  
-`StopTime` = `""` หมายถึงไม่มีเวลาหยุด  
-`Loops` = `0` หมายถึงวนไม่รู้จบ
+`StopTime = ""` หมายถึงไม่มีเวลาหยุด | `Loops = 0` หมายถึงวนไม่รู้จบ
 
 ---
 
-## Serial Protocol (อ้างอิง)
+### แท็บ SigGen — Audio Signal Generator
 
-GUI สื่อสารกับ Pico ผ่านคำสั่ง USB Serial เหล่านี้:
+สร้างสัญญาณเสียงทดสอบออกทาง DAC โดยตรง ใช้ทดสอบลำโพง, วัด frequency response หรือ burn-in ระบบเสียง
 
-```
-play / pause / stop / next / prev
-goto <trackname>
-volume <0-100>
-eq band <0-31> <value>
-eq reset
-mono on|off
-sched list
-sched clear / sched pause / sched resume
-sched add time=HH:MM [stop=HH:MM] tracks=name1,name2 [loops=N] [days=1111111] [enabled=1]
-sched save
-date YYYY-MM-DD HH:MM:SS
-siggen sine|square|triangle|saw|white|pink [freq_hz]
-siggen off
-sigfreq <1-20000>
-```
+| Waveform | ลักษณะ |
+|----------|--------|
+| Sine | คลื่นไซน์บริสุทธิ์ — ทดสอบความถี่เดี่ยว |
+| Square | คลื่นสี่เหลี่ยม — harmonics คี่สูง |
+| Triangle | คลื่นสามเหลี่ยม — harmonics คี่ลดลงเร็ว |
+| Sawtooth | คลื่นฟันเลื่อย — harmonics ทั้งคี่และคู่ |
+| White Noise | สัญญาณสุ่ม broadband — ทดสอบ full range |
+| Pink Noise | 1/f spectrum — ใกล้เคียงเสียงธรรมชาติ เหมาะ room acoustics |
+
+- **Frequency slider** — ลากหรือพิมพ์ 1–20000 Hz, เปลี่ยนความถี่แบบ **live** ขณะ running โดยไม่มีช่องเงียบ
+- **Volume (dBFS)** — ปรับระดับเสียง sync กับ Player tab
+- กด **Start** เพื่อเริ่ม → กด **Stop** เพื่อหยุดและกลับสู่โหมดเล่นเพลงปกติ
 
 ---
 
-## โครงสร้างไฟล์
+### แท็บ MIDI CUE
+
+เชื่อม MIDI Input device (USB keyboard หรือ virtual port จาก DAW ผ่าน loopMIDI) แล้วกำหนดให้โน้ตแต่ละตัวสั่งคำสั่ง playback
+
+1. เลือก MIDI device จาก dropdown แล้วคลิก **Open**
+2. คลิก **＋ Add CUE** เพื่อเพิ่มแถวใหม่
+3. ระบุ MIDI note number (0–127) — GUI แสดงชื่อโน้ต (C3, D#4 ฯลฯ) อัตโนมัติ
+4. เลือก Command: `goto` / `play` / `stop` / `next` / `prev`
+5. ถ้าเลือก `goto` ให้ใส่ชื่อไฟล์ (ไม่ต้องใส่นามสกุล) ในช่อง Track
+
+CUE list บันทึกอัตโนมัติเป็น `midicues.json` ในโฟลเดอร์โปรแกรม
+
+---
+
+## ไฟล์ที่สร้างโดยโปรแกรม
+
+ไฟล์ต่อไปนี้ถูกบันทึกในโฟลเดอร์เดียวกับ `.exe`:
+
+| ไฟล์ | เนื้อหา |
+|------|---------|
+| `settings.json` | ค่าตั้งต้น (autoconnect, repeat mode ล่าสุด) |
+| `hotkeys.json` | Hotkey ที่กำหนดเอง |
+| `midicues.json` | MIDI CUE list |
+| `schedules.json` | Schedule ล่าสุดที่แก้ไขใน GUI |
+| `lastport.txt` | COM port ล่าสุดที่ใช้ |
+| `windowstate.json` | ตำแหน่งและขนาดหน้าต่าง |
+
+---
+
+## โครงสร้างโปรเจกต์
 
 ```
 sonopilot-pc/
 ├── MainWindow.xaml          UI layout (WPF)
-├── MainWindow.xaml.cs       Code-behind (logic)
-├── SerialService.cs         USB Serial abstraction
-├── App.xaml / App.xaml.cs
-├── RP2350Player.csproj      .NET 10 WPF project
+├── MainWindow.xaml.cs       Code-behind (logic ทั้งหมด)
+├── SerialService.cs         USB HID abstraction
+├── App.xaml / App.xaml.cs   Application entry point
+├── RP2350Player.csproj      .NET 10 WPF project file
 └── installer.iss            Inno Setup script (installer)
 ```
+
+---
+
+## หมายเหตุ
+
+- GUI ใช้ USB **HID** (ไม่ใช่ CDC Serial) — ไม่ต้องติดตั้ง driver เพิ่มบน Windows
+- เมื่อ disconnect GUI จะ reset สถานะปุ่ม repeat ทั้งหมด เมื่อ reconnect จะดึงค่าจาก Pico ผ่าน `status` ทันที
+- Repeat mode ถูกบันทึกทั้งใน `settings.json` (GUI) และ SD card ของ Pico — ทั้งสองฝั่งสอดคล้องกันเสมอ
+- Random mode ใช้ RP2350 hardware TRNG บน Pico — GUI ส่ง `goto <N>` แบบสุ่มแทน `next` เพื่อให้ Pico ข้ามไป track ที่ถูกต้อง
