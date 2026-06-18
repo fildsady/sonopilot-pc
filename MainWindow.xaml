@@ -1,7 +1,7 @@
 <Window x:Class="PicoAudioCore.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PicoAudioCore  v3.1" Icon="/PicoAudioCore;component/app.ico" Height="620" Width="896"
+        Title="PicoAudioCore  v3.5" Icon="/PicoAudioCore;component/app.ico" Height="620" Width="896"
         Background="#1e1e2e" Foreground="White"
         FontFamily="Cascadia Code, Cascadia Mono, Consolas"
         FontSize="13"
@@ -448,7 +448,7 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
                 <Image Source="/PicoAudioCore;component/app.ico" Width="16" Height="16" Margin="0,0,8,0"/>
                 <TextBlock Text="PicoAudioCore" Foreground="#cba6f7" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                <TextBlock Text="  v3.1" Foreground="#585b70" FontSize="13" VerticalAlignment="Center"/>
+                <TextBlock Text="  v3.5" Foreground="#585b70" FontSize="13" VerticalAlignment="Center"/>
             </StackPanel>
 
             <!-- Window controls -->
@@ -828,7 +828,7 @@
                         </Grid>
                     </Border>
 
-                    <!-- Serial Log -->
+                    <!-- HID Console -->
                     <Border Grid.Row="4" Background="#181825" CornerRadius="6" Padding="2">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -836,7 +836,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="8,6,8,4">
-                                <TextBlock Text="Serial Log" Foreground="#6c7086" FontSize="13"/>
+                                <TextBlock Text="HID Console" Foreground="#6c7086" FontSize="13"/>
                                 <Button x:Name="BtnClearLog" Content="Clear" Style="{StaticResource DarkBtn}"
                                         FontSize="13" Padding="6,2" Margin="8,0,0,0" Click="BtnClearLog_Click"/>
                             </StackPanel>
@@ -1569,7 +1569,7 @@
                         <TextBlock Text="SonoPilot" FontSize="28" FontWeight="Bold"
                                    Foreground="#cba6f7" FontFamily="Consolas" Margin="0,0,0,4"/>
                         <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#6c7086" Margin="0,0,0,20">
-                            <Run Text="PC GUI  v3.1   ·   Firmware v1.7   ·   © 2025 fildsady"/>
+                            <Run Text="PC GUI  v3.5   ·   Firmware v1.7   ·   © 2025 fildsady"/>
                         </TextBlock>
 
                         <Separator Background="#383858" Margin="0,0,0,20"/>
@@ -1650,7 +1650,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="v3.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="v3.5" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Firmware" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="v1.7" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Repository" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
@@ -1667,11 +1667,11 @@
                         <TextBlock Text="What's New" FontSize="14" FontWeight="SemiBold"
                                    Foreground="#89b4fa" Margin="0,0,0,10"/>
 
-                        <!-- v3.1 -->
+                        <!-- v3.5 -->
                         <Border Background="#181825" CornerRadius="6" Padding="12,10" Margin="0,0,0,6">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                    <TextBlock Text="v3.1" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,10,0"/>
+                                    <TextBlock Text="v3.5" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,10,0"/>
                                     <TextBlock Text="ปัจจุบัน" Foreground="#6c7086" FontSize="12" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" LineHeight="20" TextWrapping="Wrap">

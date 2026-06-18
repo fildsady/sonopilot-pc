@@ -1,4 +1,4 @@
-# SonoPilot PC — GUI v3.1 (Windows)
+# SonoPilot PC — GUI v3.5 (Windows)
 
 แอปพลิเคชัน WPF (.NET 10, Windows) สำหรับควบคุม **SonoPilot Firmware** บน Raspberry Pi Pico 2 ผ่าน USB HID  
 รองรับการควบคุม Playback, EQ, Scheduler, Signal Generator, MIDI CUE และการจัดการไฟล์บน SD card
