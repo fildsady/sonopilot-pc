@@ -1,5 +1,5 @@
-#define AppName      "PicoAudioCore"
-#define AppVersion   "3.1"
+#define AppName      "SonoPilot"
+#define AppVersion   "3.5"
 #define AppPublisher "fildsady"
 #define AppExeName   "PicoAudioCore.exe"
 #define SourceDir    "publish"
@@ -14,7 +14,7 @@ AppPublisher={#AppPublisher}
 DefaultDirName={autopf}\{#AppName}
 DefaultGroupName={#AppName}
 OutputDir=installer_output
-OutputBaseFilename=PicoAudioCore-Setup-v{#AppVersion}
+OutputBaseFilename=SonoPilot-Setup-v{#AppVersion}
 SetupIconFile=app.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
