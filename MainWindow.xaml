@@ -1335,7 +1335,7 @@
                     <StackPanel>
 
                         <!-- Title -->
-                        <TextBlock Text="PicoAudioCore — คู่มือการใช้งาน"
+                        <TextBlock Text="SonoPilot PC — คู่มือการใช้งาน"
                                    Foreground="#cdd6f4" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
 
                         <!-- ── Connection ── -->
@@ -1356,6 +1356,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
                                 <RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/>
+                                <RowDefinition/><RowDefinition/>
                             </Grid.RowDefinitions>
                             <!-- headers -->
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="ปุ่ม / ช่อง" Foreground="#585b70" FontSize="13" FontFamily="Consolas" Margin="0,0,0,4"/>
@@ -1368,13 +1369,17 @@
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="หยุด" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="◀ Prev / Next ▶" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="เพลงก่อนหน้า / ถัดไป" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Volume slider" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="ระดับเสียง 0–100 (บันทึกลง SD อัตโนมัติ)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Mono"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="สลับโหมด mono / stereo" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
-                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Track list"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ดับเบิลคลิกเพื่อกระโดดไปยัง track นั้น" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0">เพลงก่อนหน้า / ถัดไป — ในโหมด Random จะสุ่ม track ใหม่แทน</TextBlock>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Goto"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0">พิมพ์ชื่อไฟล์ (ไม่ต้องใส่นามสกุล) หรือหมายเลข track (1-based) แล้วกด Go</TextBlock>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Repeat Mode" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" TextWrapping="Wrap" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0">All / One / Off / Single / 🎲 Random — ปุ่มที่ active เปลี่ยนสีทันที</TextBlock>
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Volume slider" Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="ระดับเสียง 0–100 (บันทึกลง SD อัตโนมัติ)" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="Mono"        Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="8" Grid.Column="1" Text="สลับโหมด mono / stereo" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Row="9" Grid.Column="0" Text="Track list"  Foreground="#a6e3a1" FontFamily="Consolas" FontSize="13"/>
+                            <TextBlock Grid.Row="9" Grid.Column="1" Text="ดับเบิลคลิกเพื่อกระโดดไปยัง track นั้น" Foreground="#cdd6f4" FontSize="13" Margin="8,0,0,0"/>
                         </Grid>
 
                         <Rectangle Height="1" Fill="#313244" Margin="0,12,0,12"/>
@@ -1537,6 +1542,12 @@
                             <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
                                 • ถ้า port ไม่ขึ้น ให้กด Refresh หรือถอด-เสียบ USB ใหม่
                             </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
+                                • โหมด 🎲 Random จะสุ่ม track ถัดไปด้วย RP2350 hardware TRNG — ปุ่ม Prev/Next ในโหมดนี้จะสุ่มแทนการเลื่อนตามลำดับ
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" FontSize="13" Margin="0,0,0,5">
+                                • ช่อง Goto รองรับทั้งชื่อไฟล์และหมายเลข track (1-based) — เช่น <Run FontFamily="Consolas" Foreground="#fab387">goto 5</Run> จะกระโดดไป track ที่ 5
+                            </TextBlock>
                         </StackPanel>
 
                     </StackPanel>
@@ -1555,7 +1566,7 @@
                     <StackPanel MaxWidth="640" HorizontalAlignment="Left">
 
                         <!-- Logo / title -->
-                        <TextBlock Text="PicoAudioCore" FontSize="28" FontWeight="Bold"
+                        <TextBlock Text="SonoPilot" FontSize="28" FontWeight="Bold"
                                    Foreground="#cba6f7" FontFamily="Consolas" Margin="0,0,0,4"/>
                         <TextBlock FontFamily="Consolas" FontSize="13" Foreground="#6c7086" Margin="0,0,0,20">
                             <Run Text="PC GUI  v3.1   ·   Firmware v1.7   ·   © 2025 fildsady"/>
@@ -1568,9 +1579,9 @@
                                    Foreground="#89b4fa" Margin="0,0,0,8"/>
                         <TextBlock TextWrapping="Wrap" FontSize="13"
                                    Foreground="#cdd6f4" LineHeight="22" Margin="0,0,0,20">
-                            PicoAudioCore คือระบบเล่นเสียงดิจิทัล In-house สร้างบน Raspberry Pi Pico 2 (RP2350)
+                            SonoPilot คือระบบเล่นเสียงดิจิทัล In-house สร้างบน Raspberry Pi Pico 2 (RP2350)
                             รองรับ MP3 / WAV / FLAC ออกเสียงผ่าน MCP4922 12-bit DAC แยกชิป
-                            พร้อม 10-band EQ, Scheduler อัตโนมัติ และควบคุมผ่าน PC GUI นี้
+                            พร้อม 10-band EQ, Scheduler อัตโนมัติ, Repeat Random (hardware TRNG) และควบคุมผ่าน PC GUI นี้
                         </TextBlock>
 
                         <Separator Background="#383858" Margin="0,0,0,20"/>
@@ -1611,7 +1622,7 @@
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="MP3 (minimp3)  ·  WAV 8/16-bit  ·  FLAC ≤48 kHz (dr_flac)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="Storage" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="SD card  FatFS  SPI  ·  สูงสุด 500 tracks" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="SD card  FatFS  SPI  ·  สูงสุด 200 tracks" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
 
                             <TextBlock Grid.Row="6" Grid.Column="0" Text="PC GUI" Foreground="#6c7086" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
                             <TextBlock Grid.Row="6" Grid.Column="1" Text="WPF  .NET 10  C#  (Windows)" Foreground="#cdd6f4" FontFamily="Consolas" FontSize="13" Margin="0,3"/>
@@ -1664,7 +1675,9 @@
                                     <TextBlock Text="ปัจจุบัน" Foreground="#6c7086" FontSize="12" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <TextBlock FontFamily="Consolas" FontSize="12" Foreground="#cdd6f4" LineHeight="20" TextWrapping="Wrap">
-                                    <Run Foreground="#f38ba8">★</Run><Run> Quick Controls — ปุ่ม ▶ ⏸ ⏹ ใน connection bar กด Play/Pause/Stop ได้จากทุก tab</Run>
+                                    <Run Foreground="#f38ba8">★</Run><Run> Quick Controls — ปุ่ม ▶ ⏸ ⏹ ใน connection bar กด Play/Pause/Stop ได้จากทุก tab&#10;</Run>
+                                    <Run Foreground="#f38ba8">★</Run><Run> Repeat Random — สุ่ม track ถัดไปด้วย RP2350 hardware TRNG, Prev/Next สุ่มแทนเลื่อนตามลำดับ&#10;</Run>
+                                    <Run Foreground="#f38ba8">★</Run><Run> Goto by index — ส่งหมายเลข track (1-based) แทนชื่อไฟล์ได้ทันที</Run>
                                 </TextBlock>
                             </StackPanel>
                         </Border>
